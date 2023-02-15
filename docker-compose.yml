@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  app:
+    container_name: nest_estate_backend
+    restart: always
+    build: .
+    environment:
+      - WATCHPACK_POLLING=true
+    ports:
+      - '80:5000'
+    links:
+      - mongo
+  mongo:
+    container_name: nongo
+    image: mongo
+    ports:
+      - '27017:27017'
+         
