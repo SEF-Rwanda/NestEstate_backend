@@ -5,6 +5,8 @@ services:
     container_name: nest_estate_backend
     restart: always
     build: .
+    environment:
+      - WATCHPACK_POLLING=true
     ports:
       - '80:5000'
     links:

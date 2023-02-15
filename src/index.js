@@ -1,11 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
-import dbConnection from "./config/config"
+import dbConnection from "./config/config";
 
 const app = express();
 app.use(express.json());
+app.use("/", (req, res) => {
+  res.send("Hello World!");
+});
 
-dbConnection()
+dbConnection();
 
 const PORT = 5000;
 
