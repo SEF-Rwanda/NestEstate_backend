@@ -8,11 +8,11 @@ services:
     environment:
       - WATCHPACK_POLLING=true
     ports:
-      - '80:5000'
+      - '5000:5000'
     links:
       - mongo
   mongo:
-    container_name: nongo
+    container_name: mongo
     image: mongo
     ports:
       - '27017:27017'

@@ -5,7 +5,10 @@ import dbConnection from "./config/config";
 const app = express();
 app.use(express.json());
 app.use("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200).send({
+    status: 200,
+    message: "Welcome To Nest estate API",
+  });
 });
 
 dbConnection();
