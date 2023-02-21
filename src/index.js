@@ -1,17 +1,20 @@
 import express from "express";
-import mongoose from "mongoose";
+import HttpStatus from "http-status";
 import dbConnection from "./config/config";
+import userRoutes from "./routes/userRouter";
 
 const app = express();
 app.use(express.json());
-app.use("/", (req, res) => {
-  res.status(200).send({
-    status: 200,
-    message: "Welcome To Nest estate API",
-  });
-});
 
 dbConnection();
+
+app.use("/api/v1/users", userRoutes);
+app.use("/", (req, res) => {
+  res.json({
+    message: "Welcome to the Nest estate API",
+    status: HttpStatus.OK,
+  });
+});
 
 const PORT = 5000;
 
