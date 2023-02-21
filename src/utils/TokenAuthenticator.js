@@ -1,10 +1,14 @@
 import jwt from "jsonwebtoken";
 import ShortUniqueId from "short-unique-id";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./env" });
 
 /**
  * @export
  * @class TokenAuthenticator
  */
+
 export default class TokenAuthenticator {
   /**
    * Store data in Jwt
@@ -13,6 +17,7 @@ export default class TokenAuthenticator {
    * @memberof TokenAuthenticator
    * @returns {object} token
    */
+
   static tokenGenerator(data) {
     const token = jwt.sign(data, process.env.JWT_KEY);
     return token;
@@ -27,6 +32,7 @@ export default class TokenAuthenticator {
 
     return { OTP, otpExpires };
   }
+
   /**
    * decode a JWT token
    * @static

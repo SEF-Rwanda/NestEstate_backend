@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import Response from "../utils/Response";
 
 class CheckPassword {
-  static checkPassword(req, res) {
+  static checkPassword(req, res,next) {
     const { password, passwordConfirm } = req.body;
 
     if (password !== passwordConfirm) {
