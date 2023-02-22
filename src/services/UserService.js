@@ -57,6 +57,15 @@ class UserService {
 
     return true;
   }
+
+  static  getUserProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).orFail();
+        return user;
+    } catch (error) {
+      console.log(error.message);
+    }
+}
 }
 
 export default UserService;

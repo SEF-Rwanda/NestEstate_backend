@@ -40,6 +40,32 @@ class UserController {
       );
     }
   });
+
+  static getUserProfile = catchAsyncError(async (req, res) => {
+    console.log("WE ARE HERE=============================================")
+    try {
+      const user = await UserService.getUserProfile(req, res);
+      if (user) {
+        return Response.successMessage(
+          res,
+          "",
+          user,
+          httpStatus.OK
+        );
+      }
+      return Response.errorMessage(
+        res,
+        "Something went wrong,please try again",
+        httpStatus.BAD_REQUEST
+      );
+    } catch (error) {
+      return Response.errorMessage(
+        res,
+        error.message,
+        httpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  });
 }
 
 export default UserController;

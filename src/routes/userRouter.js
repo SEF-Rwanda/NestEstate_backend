@@ -11,6 +11,6 @@ router.post(
   CheckPassword.checkPassword,
 
   UserController.createUser
-);
+).get("/profile/:id", UserController.getUserProfile);
 
 export default router;

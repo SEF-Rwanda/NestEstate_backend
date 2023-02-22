@@ -4,6 +4,7 @@ const connectDb = async () => {
   try {
     const conn = await mongoose.connect(
       "mongodb://mongo:27017/nest_estate_backend",
+      // "mongodb+srv://root:root@cluster0.bqzsdxw.mongodb.net/nest_estate_backend?retryWrites=true&w=majority",
       // "mongodb+srv://chadrackngirimana:safari1006@cluster0.l1sh37o.mongodb.net/?retryWrites=true&w=majority",
       {
         useUnifiedTopology: true,
