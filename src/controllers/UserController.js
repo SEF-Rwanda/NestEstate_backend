@@ -1,10 +1,13 @@
 import httpStatus from "http-status";
 import UserService from "../services/UserService";
+import User from "../models/UserModel";
 import catchAsyncError from "../utils/catchAsyncError";
 import Response from "../utils/Response";
 import dotenv from "dotenv";
 import Email from "../utils/Email";
 import TokenAuthenticator from "./../utils/TokenAuthenticator";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -16,8 +19,8 @@ class UserController {
         newUser.password = "";
         const { password, ...data } = newUser;
         const token = TokenAuthenticator.tokenGenerator(data._doc);
-        const newData= {...data._doc,token};
-        
+        const newData = { ...data._doc, token };
+
         const response = await Email.verificationEmail(req, data._doc);
 
         return Response.successMessage(
@@ -40,6 +43,16 @@ class UserController {
       );
     }
   });
+
+  static login = catchAsyncError(async (req, res) => {
+    return UserService.loginService(req, res)
+  });
+
+  static logout = catchAsyncError(async (req, res) => {
+    return UserService.logoutService(req, res)
+  });
+
+
 }
 
 export default UserController;
