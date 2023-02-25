@@ -3,10 +3,10 @@ import User from "../models/UserModel";
 import TokenAuthenticator from "../utils/TokenAuthenticator";
 import Response from "../utils/Response";
 
-
 const protectedRoute = async (req, res, next) => {
   try {
-    const token =  req.headers.authorization;
+    const bearerToken = req.headers.authorization;
+    const token = bearerToken.split(" ")[1];
 
     if (!token) {
       return Response.errorMessage(
@@ -33,7 +33,7 @@ const protectedRoute = async (req, res, next) => {
         HttpStatus.UNAUTHORIZED
       );
     }
-    const validUser = await users.findById(payload._id);
+    const validUser = await User.findById(payload._id);
     if (!validUser) {
       return Response.errorMessage(
         res,

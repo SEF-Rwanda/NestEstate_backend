@@ -18,7 +18,7 @@ class UserController {
       if (newUser) {
         newUser.password = "";
         const { password, ...data } = newUser;
-        const token = TokenAuthenticator.tokenGenerator(data._doc);
+        const token = TokenAuthenticator.signToken(data._doc);
         const newData = { ...data._doc, token };
 
         const response = await Email.verificationEmail(req, data._doc);
@@ -53,6 +53,28 @@ class UserController {
   });
 
 
+  static verifyEmail = catchAsyncError(async (req, res, next) => {
+    const verified = await UserService.verifyUser(req);
+
+    if (!verified) {
+      return next(
+        Response.errorMessage(
+          res,
+          "Invalid code or has expired!.",
+          httpStatus.BAD_REQUEST
+        )
+      );
+    }
+    if (verified === "verified") {
+      Response.errorMessage(res, "This is already!.", httpStatus.BAD_REQUEST);
+    }
+    return Response.successMessage(
+      res,
+      "Email verified successfuly!",
+      null,
+      httpStatus.OK
+    );
+  });
 }
 
 export default UserController;
