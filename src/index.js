@@ -19,9 +19,6 @@ app.use("/", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT|5000;
-console.log(process.env.SENDGRID_API_KEY);
-console.log(process.env.SENDGRID_SENDER);
-
+const PORT = process.env.PORT | 5000;
 
 app.listen(PORT, console.log(`Server Started on Port ${PORT}`));

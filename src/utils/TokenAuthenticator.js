@@ -18,11 +18,6 @@ export default class TokenAuthenticator {
    * @returns {object} token
    */
 
-  static tokenGenerator(data) {
-    const token = jwt.sign(data, process.env.JWT_KEY);
-    return token;
-  }
-
   static OTPGenerator() {
     const OTP = new ShortUniqueId({
       length: 4,

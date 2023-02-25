@@ -17,26 +17,24 @@ class UserService {
     const { firstName, lastName, email, phone, password, passwordConfirm } =
       req.body;
     const { OTP, otpExpires } = TokenAuthenticator.OTPGenerator();
-    try {
-      const newUserObject = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-        passwordConfirm,
-        otp: OTP,
-        otpExpires,
-      };
-      const newUser = await User.create(newUserObject);
 
-      return newUser;
-    } catch (error) {
-      console.log(error.message);
-    }
+    const newUserObject = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      passwordConfirm,
+      otp: OTP,
+      otpExpires,
+    };
+    const newUser = await User.create(newUserObject);
+
+    return newUser;
   };
+
   /**
-   * Admin verify Users
+   * Verifying Users
    * @static
    * @param {object} req  request object
    * @memberof AuthService
@@ -53,6 +51,7 @@ class UserService {
     });
 
     if (!newUser) return false;
+    if (newUser.isVerified) return "verified";
 
     newUser.isVerified = true;
     newUser.otp = undefined;
