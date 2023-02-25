@@ -18,4 +18,8 @@ router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
 
 router.post("/verifyEmail", protectedRoute, UserController.verifyEmail);
+
+router.patch("/profile", UserController.updateUserProfile);
+
+router.get("/profile/:id", UserController.getUserProfile);
 export default router;

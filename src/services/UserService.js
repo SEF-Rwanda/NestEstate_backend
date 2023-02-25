@@ -99,6 +99,29 @@ class UserService {
     res.status(200).json({ status: 'Logged out successfully' });
   };
 
+  static  getUserProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).orFail();
+        return user;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  static updateUserProfile = async (req, res, next) => {
+    try {
+      const user_id = req.user._id //"63f6156fb4119d78eab6638b"
+      const user = await User.findById(user_id).orFail();
+      user.firstName = req.body.firstName || user.firstName;
+      user.lastName = req.body.lastName || user.lastName;
+      user.email = req.body.email || user.email;
+      user.photo= req.body.photo || user.photo;
+      await user.save({validateBeforeSave: false});
+      return user;
+    }  catch (error) {
+      console.log(error.message);
+    }
+  };
 }
 
 export default UserService;

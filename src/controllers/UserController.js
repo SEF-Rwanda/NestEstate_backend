@@ -75,6 +75,60 @@ class UserController {
       httpStatus.OK
     );
   });
+
+  static updateUserProfile = catchAsyncError(async (req, res) => {
+    try {
+      const user = await UserService.updateUserProfile(req, res);
+      if (user) {
+        user.password = "";
+        return Response.successMessage(
+          res,
+          "User profile updated successfully",
+          user,
+          httpStatus.CREATED
+        );
+      }
+      return Response.errorMessage(
+        res,
+        "Something went wrong,please try again",
+        httpStatus.BAD_REQUEST
+      );
+    } catch (error) {
+      return Response.errorMessage(
+        res,
+        error.message,
+        httpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  });
+
+  static getUserProfile = catchAsyncError(async (req, res) => {
+    try {
+      const user = await UserService.getUserProfile(req, res);
+      if (user) {
+        return Response.successMessage(
+          res,
+          "User profile retrieved successfully",
+          user,
+          httpStatus.OK
+        );
+      }
+      return Response.errorMessage(
+        res,
+        "Something went wrong,please try again",
+        httpStatus.BAD_REQUEST
+      );
+    } catch (error) {
+      return Response.errorMessage(
+        res,
+        error.message,
+        httpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  });     
+    
+    
+
 }
 
 export default UserController;
