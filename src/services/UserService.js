@@ -69,7 +69,6 @@ class UserService {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      // return next(new AppError("Email doesn't exist", 401));
       return res.status(401).send("Email doesn't exist");
     }
 
@@ -78,8 +77,7 @@ class UserService {
     if (!isValid) {
       return res.status(401).send('Password is incorrect');
     }
-
-    const data = { id: user.id, firstName: user.firstName,lastName:user.lastName, email: user.email }
+    const data = { id: user.id, firstName: user.firstName, lastName:user.lastName, email: user.email }
     const token = TokenAuthenticator.signToken(data);
     return res.header('auth-token', token).send({
       id: user._id,
