@@ -79,11 +79,12 @@ class UserService {
       return res.status(401).send('Password is incorrect');
     }
 
-    const data = { id: user.id, name: user.name, email: user.email }
+    const data = { id: user.id, firstName: user.firstName,lastName:user.lastName, email: user.email }
     const token = TokenAuthenticator.signToken(data);
     return res.header('auth-token', token).send({
       id: user._id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       pic: user.pic,
       token,
@@ -99,6 +100,32 @@ class UserService {
     res.status(200).json({ status: 'Logged out successfully' });
   };
 
+  static  getUserProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).orFail();
+        return user;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  static updateUserProfile = async (req, res, next) => {
+    
+    
+    try {
+      
+      const user_id = req.params.id //"63f6156fb4119d78eab6638b"
+      const user = await User.findById(user_id).orFail();
+      user.firstName = req.body.firstName || user.firstName;
+      user.lastName = req.body.lastName || user.lastName;
+      user.email = req.body.email || user.email;
+      user.photo= req.body.photo || user.photo;
+      await user.save({validateBeforeSave: false});
+      return user;
+    }  catch (error) {
+      console.log(error.message);
+    }
+  };
 }
 
 export default UserService;

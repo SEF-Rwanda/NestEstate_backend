@@ -3,11 +3,13 @@ import HttpStatus from "http-status";
 import dbConnection from "./config/config";
 import userRoutes from "./routes/userRouter";
 import dotenv from "dotenv";
+import cors from "cors"
 
 dotenv.config({ path: "./.env" });
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 dbConnection();
 

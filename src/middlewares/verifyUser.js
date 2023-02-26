@@ -42,6 +42,7 @@ const protectedRoute = async (req, res, next) => {
       );
     }
     req.user = payload;
+
     req.token = token;
     next();
   } catch (error) {
