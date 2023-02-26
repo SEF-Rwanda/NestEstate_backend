@@ -3,11 +3,14 @@ import HttpStatus from "http-status";
 import dbConnection from "./config/config";
 import userRoutes from "./routes/userRouter";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config({ path: "./.env" });
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 dbConnection();
 
@@ -19,9 +22,8 @@ app.use("/", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT|5000;
+const PORT = process.env.PORT | 5000;
 console.log(process.env.SENDGRID_API_KEY);
 console.log(process.env.SENDGRID_SENDER);
-
 
 app.listen(PORT, console.log(`Server Started on Port ${PORT}`));

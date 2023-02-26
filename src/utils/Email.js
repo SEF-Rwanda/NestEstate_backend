@@ -29,6 +29,18 @@ class Email {
       return false;
     }
   }
+
+  static async resetPasswordEmail(req, user, token) {
+    const msg = EmailTemplate.userResetPasswordEmail(req, user, token);
+    try {
+      await sendGrid.send(msg);
+      console.log("email sent");
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }
 
 export default Email;

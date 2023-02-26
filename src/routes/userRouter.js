@@ -13,4 +13,7 @@ router.post(
   UserController.createUser
 );
 
+router.post("/forgotPassword", UserController.forgotPassword);
+router.patch("/resetPassword/:token", UserController.resetPassword);
+
 export default router;
