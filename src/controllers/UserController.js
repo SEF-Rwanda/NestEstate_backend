@@ -8,11 +8,9 @@ import Email from "../utils/Email";
 import TokenAuthenticator from "./../utils/TokenAuthenticator";
 import sendEmail from "../utils/resetPasswordEmail";
 import SendGrid from "@sendgrid/mail";
-import User from "../models/UserModel";
 import crypto from "crypto";
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -50,7 +48,6 @@ class UserController {
       );
     }
   });
-
 
   static forgotPassword = catchAsyncError(async (req, res, next) => {
     // Get user based on POSTed email
@@ -137,13 +134,12 @@ class UserController {
   });
 
   static login = catchAsyncError(async (req, res) => {
-    return UserService.loginService(req, res)
+    return UserService.loginService(req, res);
   });
 
   static logout = catchAsyncError(async (req, res) => {
-    return UserService.logoutService(req, res)
+    return UserService.logoutService(req, res);
   });
-
 
   static verifyEmail = catchAsyncError(async (req, res, next) => {
     const verified = await UserService.verifyUser(req);
@@ -217,11 +213,7 @@ class UserController {
         httpStatus.INTERNAL_SERVER_ERROR
       );
     }
-  });     
-    
-    
-
-
+  });
 }
 
 export default UserController;
