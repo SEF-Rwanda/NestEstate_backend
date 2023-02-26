@@ -17,26 +17,24 @@ class UserService {
     const { firstName, lastName, email, phone, password, passwordConfirm } =
       req.body;
     const { OTP, otpExpires } = TokenAuthenticator.OTPGenerator();
-    try {
-      const newUserObject = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-        passwordConfirm,
-        otp: OTP,
-        otpExpires,
-      };
-      const newUser = await User.create(newUserObject);
 
-      return newUser;
-    } catch (error) {
-      console.log(error.message);
-    }
+    const newUserObject = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      passwordConfirm,
+      otp: OTP,
+      otpExpires,
+    };
+    const newUser = await User.create(newUserObject);
+
+    return newUser;
   };
+
   /**
-   * Admin verify Users
+   * Verifying Users
    * @static
    * @param {object} req  request object
    * @memberof AuthService
@@ -53,6 +51,7 @@ class UserService {
     });
 
     if (!newUser) return false;
+    if (newUser.isVerified) return "verified";
 
     newUser.isVerified = true;
     newUser.otp = undefined;
@@ -78,12 +77,12 @@ class UserService {
     if (!isValid) {
       return res.status(401).send('Password is incorrect');
     }
-
     const data = { id: user.id, firstName: user.firstName, lastName:user.lastName, email: user.email }
     const token = TokenAuthenticator.signToken(data);
     return res.header('auth-token', token).send({
       id: user._id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       pic: user.pic,
       token,
@@ -99,6 +98,32 @@ class UserService {
     res.status(200).json({ status: 'Logged out successfully' });
   };
 
+  static  getUserProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id).orFail();
+        return user;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  static updateUserProfile = async (req, res, next) => {
+    
+    
+    try {
+      
+      const user_id = req.params.id //"63f6156fb4119d78eab6638b"
+      const user = await User.findById(user_id).orFail();
+      user.firstName = req.body.firstName || user.firstName;
+      user.lastName = req.body.lastName || user.lastName;
+      user.email = req.body.email || user.email;
+      user.photo= req.body.photo || user.photo;
+      await user.save({validateBeforeSave: false});
+      return user;
+    }  catch (error) {
+      console.log(error.message);
+    }
+  };
 }
 
 export default UserService;
