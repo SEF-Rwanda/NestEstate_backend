@@ -5,25 +5,29 @@ import userRoutes from "./routes/userRouter";
 import dotenv from "dotenv";
 import cors from "cors";
 
+import cors from "cors"
+
+
 dotenv.config({ path: "./.env" });
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use(cors());
 
 dbConnection();
+app.use(cors());
 
 app.use("/api/v1/users", userRoutes);
-app.use("/", (req, res) => {
-  res.json({
-    message: "Welcome to the Nest estate API",
-    status: HttpStatus.OK,
-  });
-});
+
+// app.use("/", (req, res) => {
+//   res.json({
+//     message: "Welcome to the Nest estate API",
+//     status: HttpStatus.OK,
+//   });
+// });
 
 const PORT = process.env.PORT | 5000;
-console.log(process.env.SENDGRID_API_KEY);
-console.log(process.env.SENDGRID_SENDER);
 
 app.listen(PORT, console.log(`Server Started on Port ${PORT}`));

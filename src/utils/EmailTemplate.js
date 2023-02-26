@@ -29,7 +29,7 @@ class EmailTemplate {
       <div style="height: 60%; margin: auto; width: 94%; text-align: left; background-color: #ffff; -webkit-box-shadow: 5px 5px 5px 5px black; -moz-box-shadow: 5px 5px 5px 5px black; box-shadow: 5px 5px 5px 5px black;">
       <div style="height: 65%; padding: 10px;">
       <p>Hi ${user.firstName},</p>
-      <p>House hunting group needs to verify your email address associated with the account created.</p>
+      <p>NestEstate LTD needs to verify your email address associated with the account created.</p>
       <p>To verify your email address, use the code below.</p>
       <p>This code expires in 10 minutes after the original verification request</p>
       <h1>${user.otp}</h1>
