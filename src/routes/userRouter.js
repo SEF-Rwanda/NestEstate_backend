@@ -13,6 +13,9 @@ router.post(
   UserController.createUser
 );
 
+router.post("/forgotPassword", UserController.forgotPassword);
+router.patch("/resetPassword/:token", UserController.resetPassword);
+
 router.post("/login", UserController.login);
 
 router.post("/logout", UserController.logout);
@@ -22,4 +25,5 @@ router.post("/verifyEmail", protectedRoute, UserController.verifyEmail);
 router.put("/profile/:id", UserController.updateUserProfile);
 
 router.get("/profile/:id",UserController.getUserProfile);
+
 export default router;

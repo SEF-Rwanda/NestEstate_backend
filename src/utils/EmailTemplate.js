@@ -41,6 +41,18 @@ class EmailTemplate {
       </div>`,
     };
   }
+
+  static userResetPasswordEmail(req, user, token) {
+    return {
+      to: user.email,
+      subject: "Reset your password",
+      from: SENDGRID_SENDER,
+      token: token,
+
+      html: `<p>HI ${user.firstName},</p>
+            <p>Please click on this link to create a new password : ${token} </p>`,
+    };
+  }
 }
 
 export default EmailTemplate;
