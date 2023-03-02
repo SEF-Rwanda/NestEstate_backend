@@ -1,17 +1,19 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
+dotenv.config();
+
+/**
+ * @description Connect to MongoDB
+* @returns {Promise<void>}
+
+ */
 const connectDb = async () => {
   try {
-    const conn = await mongoose.connect(
-      "mongodb://mongo:27017/nest_estate_backend",
-      // "mongodb+srv://root:root@cluster0.bqzsdxw.mongodb.net/nest_estate_backend?retryWrites=true&w=majority",
-
-      // "mongodb+srv://chadrackngirimana:safari1006@cluster0.l1sh37o.mongodb.net/?retryWrites=true&w=majority",
-      {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-      }
-    );
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    });
 
     console.log(`MongoDB connected:${conn.connection.host}`);
   } catch (error) {
