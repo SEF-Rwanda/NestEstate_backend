@@ -4,16 +4,24 @@ import Response from "../utils/Response";
 
 class NewUserDataChecker {
   static validateCredentials = async (req, res, next) => {
-    const { email } = req.body;
+    const { email, phone } = req.body;
     const result = await User.findOne({ email });
 
-    if (result) {
+    if (result && result.email === email) {
       return Response.errorMessage(
         res,
         "Account associated with this email already exists",
         HttpStatus.CONFLICT
       );
     }
+    if (result && result.phone === phone) {
+      return Response.errorMessage(
+        res,
+        "Account associated with this phone already exists",
+        HttpStatus.CONFLICT
+      );
+    }
+
     next();
   };
 }

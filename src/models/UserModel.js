@@ -22,6 +22,15 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate: [validator.isEmail, "Provide a valid email please!"],
     },
+    phone: {
+      type: String,
+      required: [true, "Phone is required!"],
+      unique: [true, "Phone already exists"],
+      validate: [
+        validator.isMobilePhone,
+        "Provide a valid phone number please!",
+      ],
+    },
     photo: {
       type: String,
       required: true,
@@ -55,6 +64,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
+
     otp: String,
     otpExpires: Date,
     passwordResetToken: String,

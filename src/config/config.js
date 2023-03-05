@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import connectTestingDb from "./../utils/connectTestingServer";
+import checkEnv from "../utils/checkTestEnv";
 
-dotenv.config();
+dotenv.config({ path: "./.env" });
 
 /**
  * @description Connect to MongoDB
@@ -10,12 +12,17 @@ dotenv.config();
  */
 const connectDb = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-    });
+    if (checkEnv(process.env.NODE_ENV, "TEST")) {
+      console.log("TEST");
+      await connectTestingDb();
+    } else {
+      const conn = await mongoose.connect(process.env.MONGODB_URI, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+      });
 
-    console.log(`MongoDB connected:${conn.connection.host}`);
+      console.log(`MongoDB connected:${conn.connection.host}`);
+    }
   } catch (error) {
     console.log(`Error:${error.message}`);
     process.exit();
