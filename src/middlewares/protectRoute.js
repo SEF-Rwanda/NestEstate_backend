@@ -5,8 +5,7 @@ import Response from "../utils/Response";
 
 const protectedRoute = async (req, res, next) => {
   try {
-    const bearerToken = req.headers.authorization;
-    const token = bearerToken.split(" ")[1];
+    const token = req.headers.authorization.split(" ")[1];
 
     if (!token) {
       return Response.errorMessage(
@@ -41,8 +40,16 @@ const protectedRoute = async (req, res, next) => {
         HttpStatus.UNAUTHORIZED
       );
     }
-    req.user = payload;
 
+    const loggedInUser = {
+      _id: validUser._id,
+      firstName: validUser?.firstName,
+      lastName: validUser?.lastName,
+      phone: validUser?.phone,
+      email: validUser?.email,
+      isVerified: validUser?.isVerified,
+    };
+    req.user = loggedInUser;
     req.token = token;
     next();
   } catch (error) {

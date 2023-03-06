@@ -1,9 +1,10 @@
 import express from "express";
 import HttpStatus from "http-status";
-import dbConnection from "./config/config";
-import userRoutes from "./routes/userRouter";
 import dotenv from "dotenv";
 import cors from "cors";
+import dbConnection from "./config/config";
+import userRoutes from "./routes/userRouter";
+import propertyRoutes from "./routes/propertyRoute";
 
 dotenv.config({ path: "./.env" });
 
@@ -14,6 +15,7 @@ app.use(cors());
 dbConnection();
 
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/properties", propertyRoutes);
 
 app.use("/", (req, res) => {
   res.json({
