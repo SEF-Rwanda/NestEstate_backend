@@ -6,10 +6,7 @@ import Response from "../utils/Response";
 import dotenv from "dotenv";
 import Email from "../utils/Email";
 import TokenAuthenticator from "./../utils/TokenAuthenticator";
-import SendGrid from "@sendgrid/mail";
 import crypto from "crypto";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 dotenv.config();
 
