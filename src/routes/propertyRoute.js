@@ -12,4 +12,8 @@ router.post(
   PropertyController.addProperty
 );
 
+router.put(
+  "/:id", PropertyController.updateProperty
+);
+
 export default router;
