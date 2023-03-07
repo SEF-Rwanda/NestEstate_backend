@@ -19,7 +19,7 @@ const propertySchema = new mongoose.Schema(
       required: [true, "Price is required!"],
     },
 
-    Size: {
+    size: {
       type: String,
       required: [true, "Size is required!"],
     },

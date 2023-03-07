@@ -77,21 +77,21 @@ class UserService {
     if (!isValid) {
       return res.status(401).send("Password is incorrect");
     }
-    const data = {
-      _id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-    };
-    const token = TokenAuthenticator.signToken(data);
-    return res.header("auth-token", token).send({
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      pic: user.pic,
-      token,
-    });
+    if (user.isVerified === true) {
+      const data = {
+        _id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        isVerified: user.isVerified,
+      };
+
+      const token = TokenAuthenticator.signToken(data);
+      return res.header("auth-token", token).send({
+        token,
+      });
+    }
+    return res.status(404).send("The user is not verified");
   };
 
   static logoutService = (req, res) => {
