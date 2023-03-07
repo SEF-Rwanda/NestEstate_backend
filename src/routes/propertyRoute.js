@@ -11,5 +11,12 @@ router.post(
   isUserVerified,
   PropertyController.addProperty
 );
+router.get("/", PropertyController.getAllAvailableProperties);
+router.get(
+  "/my-properties",
+  protectedRoute,
+  isUserVerified,
+  PropertyController.getUserProperties
+);
 
 export default router;

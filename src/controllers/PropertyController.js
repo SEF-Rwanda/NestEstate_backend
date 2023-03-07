@@ -17,6 +17,28 @@ class PropertyController {
       httpStatus.CREATED
     );
   });
+
+  static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
+    const houses = await PropertyService.getAllAvailableProperties();
+
+    return Response.successMessage(
+      res,
+      "All available properties",
+      houses,
+      httpStatus.OK
+    );
+  });
+
+  static getUserProperties = catchAsyncError(async (req, res, next) => {
+    const houses = await PropertyService.getUserProperties(req);
+
+    return Response.successMessage(
+      res,
+      "All available properties",
+      houses,
+      httpStatus.OK
+    );
+  });
 }
 
 export default PropertyController;
