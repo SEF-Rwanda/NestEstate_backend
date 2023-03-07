@@ -70,6 +70,10 @@ const propertySchema = new mongoose.Schema(
     internet: {
       type: Boolean,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     postedBy: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
