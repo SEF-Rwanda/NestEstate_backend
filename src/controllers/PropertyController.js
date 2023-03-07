@@ -39,6 +39,32 @@ class PropertyController {
       httpStatus.OK
     );
   });
+
+  static updateProperty = catchAsyncError(async (req, res) => {
+    try {
+      const property = await PropertyService.updateProperty(req, res);
+      if (property) {
+        return Response.successMessage(
+          res,
+          "Property updated successfully",
+          property,
+          httpStatus.CREATED
+        );
+      }
+      return Response.errorMessage(
+        res,
+        "Something went wrong,please try again",
+        httpStatus.BAD_REQUEST
+      );
+    } catch (error) {
+      return Response.errorMessage(
+        res,
+        error.message,
+        httpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  });
+  
 }
 
 export default PropertyController;

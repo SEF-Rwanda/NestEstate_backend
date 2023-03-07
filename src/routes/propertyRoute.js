@@ -19,4 +19,11 @@ router.get(
   PropertyController.getUserProperties
 );
 
+router.put(
+  "/:id",
+  protectedRoute,
+  isUserVerified,
+  PropertyController.updateProperty
+);
+
 export default router;
