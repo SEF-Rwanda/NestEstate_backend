@@ -16,6 +16,17 @@ class PropertyService {
     return await Property.find({ postedBy: req?.user?._id });
   };
 
+   // view single property
+   static getSingleProperty = async (req, res, next) => {
+    try {
+      const property = await Property.findById(req.params.id).orFail();
+      return property;
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+
   // update profile
   static updateProperty = async (req, res, next) => {
     try {
@@ -23,6 +34,7 @@ class PropertyService {
       const property = await Property.findById(property_id).orFail();
       property.title = req.body.title || property.title;
       property.category = req.body.category || property.category;
+      property.section = req.body.section || property.section;
       property.price = req.body.price || property.price;
       property.size = req.body.size || property.size;
       property.upi = req.body.upi || property.upi;
@@ -35,6 +47,7 @@ class PropertyService {
       property.masterPlanLevel = req.body.masterPlanLevel;
       property.streetAddress = req.body.streetAddress;
       property.geoLocation = req.body.geoLocation;
+      property.parking=req.body.parking
       property.tank = req.body.tank;
       property.furnished = req.body.furnished;
       property.internet = req.body.internet;

@@ -40,6 +40,31 @@ class PropertyController {
     );
   });
 
+  static getSingleProperty = catchAsyncError(async (req, res) => {
+    try {
+      const property = await PropertyService.getSingleProperty(req, res);
+      if (property) {
+        return Response.successMessage(
+          res,
+          "Property retrieved successfully",
+          property,
+          httpStatus.OK
+        );
+      }
+      return Response.errorMessage(
+        res,
+        "Something went wrong,please try again",
+        httpStatus.BAD_REQUEST
+      );
+    } catch (error) {
+      return Response.errorMessage(
+        res,
+        error.message,
+        httpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  });
+
   static updateProperty = catchAsyncError(async (req, res) => {
     try {
       const property = await PropertyService.updateProperty(req, res);
