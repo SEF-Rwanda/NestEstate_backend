@@ -64,7 +64,6 @@ class PropertyController {
       );
     }
   });
-  
 }
 
 export default PropertyController;
