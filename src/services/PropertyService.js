@@ -54,9 +54,20 @@ class PropertyService {
       property.furnished = req.body.furnished || property.furnished;;
       property.internet = req.body.internet || property.internet;
 
+      if(req.body.category==="Land"){
+        property.bedrooms=0;
+        property.bathrooms=0;
+        property.furnished=false;
+        property.internet=false;
+        property.parking=false;
+        property.tank=false;
+      }
+
       // check if user uploaded main Image
       if (req.body.mainImage !== '') {
         const ImgId = property.mainImage.public_id;
+
+        // delete old image
         if (ImgId) {
             await cloudinary.uploader.destroy(ImgId);
         }
