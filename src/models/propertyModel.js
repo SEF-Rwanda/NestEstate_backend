@@ -32,8 +32,14 @@ const propertySchema = new mongoose.Schema(
       required: [true, "Description is required!"],
     },
     mainImage: {
-      type: String,
-      required: true,
+      public_id: {
+        type: String,
+        required: true
+      },
+      url: {
+          type: String,
+          required: true
+      }
     },
     otherImages: {
       type: Array,
