@@ -137,27 +137,8 @@ class UserController {
     return UserService.logoutService(req, res);
   });
 
-  static verifyEmail = catchAsyncError(async (req, res, next) => {
-    const verified = await UserService.verifyUser(req);
-
-    if (!verified) {
-      return next(
-        Response.errorMessage(
-          res,
-          "Invalid code or has expired!.",
-          httpStatus.BAD_REQUEST
-        )
-      );
-    }
-    if (verified === "verified") {
-      Response.errorMessage(res, "This is already!.", httpStatus.BAD_REQUEST);
-    }
-    return Response.successMessage(
-      res,
-      "Email verified successfuly!",
-      null,
-      httpStatus.OK
-    );
+  static verifyEmail = catchAsyncError(async (req,res) => {
+    return await UserService.verifyUser(req,res);
   });
 
   static updateUserProfile = catchAsyncError(async (req, res) => {

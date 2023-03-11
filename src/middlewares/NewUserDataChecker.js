@@ -5,7 +5,7 @@ import Response from "../utils/Response";
 class NewUserDataChecker {
   static validateCredentials = async (req, res, next) => {
     const { email, phone } = req.body;
-    const result = await User.findOne({ email });
+    const result = await User.findOne({ phone: phone });
 
     if (result && result.email === email) {
       return Response.errorMessage(
@@ -13,8 +13,7 @@ class NewUserDataChecker {
         "Account associated with this email already exists",
         HttpStatus.CONFLICT
       );
-    }
-    if (result && result.phone === phone) {
+    } else if (result && result.phone === phone) {
       return Response.errorMessage(
         res,
         "Account associated with this phone already exists",
