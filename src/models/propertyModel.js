@@ -32,8 +32,14 @@ const propertySchema = new mongoose.Schema(
       required: [true, "Description is required!"],
     },
     mainImage: {
-      type: String,
-      required: true,
+      public_id: {
+        type: String,
+        required: true
+      },
+      url: {
+          type: String,
+          required: true
+      }
     },
     otherImages: {
       type: Array,
@@ -41,15 +47,18 @@ const propertySchema = new mongoose.Schema(
     },
     bedrooms: {
       type: Number,
+      default:1
     },
     bathrooms: {
       type: Number,
+      default:1
     },
     masterPlanUse: {
       type: String,
     },
     masterPlanLevel: {
       type: String,
+      default:"R1"
     },
     streetAddress: {
       type: String,
@@ -60,15 +69,19 @@ const propertySchema = new mongoose.Schema(
     },
     parking: {
       type: Boolean,
+      default: false
     },
     tank: {
       type: Boolean,
+      default: false
     },
     furnished: {
       type: Boolean,
+      default:false
     },
     internet: {
       type: Boolean,
+      default:false
     },
     isAvailable: {
       type: Boolean,

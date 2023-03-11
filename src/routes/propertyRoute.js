@@ -18,6 +18,7 @@ router.get(
   isUserVerified,
   PropertyController.getUserProperties
 );
+router.get("/:id", PropertyController.getSingleProperty);
 
 router.put(
   "/:id",
