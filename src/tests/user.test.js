@@ -154,10 +154,10 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .set("Accept", "application/json")
         .send(users[6]);
       expect(res.body).to.be.an("object");
-      expect(res.status).to.equal(httpStatus.INTERNAL_SERVER_ERROR);
-      expect(res.body.status).to.equal(httpStatus.INTERNAL_SERVER_ERROR);
+      expect(res.status).to.equal(httpStatus.CONFLICT);
+      expect(res.body.status).to.equal(httpStatus.CONFLICT);
       expect(res.body.error).to.equal(
-        'E11000 duplicate key error collection: test.users index: phone_1 dup key: { phone: "0781475108" }'
+        "Account associated with this phone already exists"
       );
     } catch (error) {
       console.error(error.message);

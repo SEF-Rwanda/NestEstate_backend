@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.post(
   "/signup",
-  NewUserDataChecker.validateCredentials,
+  NewUserDataChecker.validateEmail,
+  NewUserDataChecker.validatePhone,
   CheckPassword.checkPassword,
   UserController.createUser
 );
