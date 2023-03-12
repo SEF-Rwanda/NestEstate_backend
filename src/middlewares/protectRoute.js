@@ -43,6 +43,7 @@ const protectedRoute = async (req, res, next) => {
 
     const loggedInUser = {
       _id: validUser._id,
+      otp: validUser.otp,
       firstName: validUser?.firstName,
       lastName: validUser?.lastName,
       phone: validUser?.phone,

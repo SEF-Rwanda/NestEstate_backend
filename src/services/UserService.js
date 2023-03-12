@@ -1,9 +1,9 @@
 import User from "../models/UserModel";
 import TokenAuthenticator from "../utils/TokenAuthenticator";
 import ValidateLoginInfo from "../middlewares/validateLoginInfo";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import Joi from "joi";
+import httpStatus from "http-status";
+import Response from "../utils/Response";
 
 class UserService {
   /**
@@ -40,7 +40,7 @@ class UserService {
    * @memberof AuthService
    * @returns {object} data
    */
-  static async verifyUser(req, next) {
+  static async verifyUser(req, res) {
     const { otp } = req.body;
     const { user } = req;
 
@@ -50,15 +50,42 @@ class UserService {
       otpExpires: { $gt: Date.now() },
     });
 
-    if (!newUser) return false;
-    if (newUser.isVerified) return "verified";
+    if (!newUser) {
+      return Response.errorMessage(
+        res,
+        "Invalid code or has expired!.",
+        httpStatus.BAD_REQUEST
+      );
+    }
+
+    if (newUser.isVerified) {
+      return Response.errorMessage(
+        res,
+        "This is already verified!.",
+        httpStatus.BAD_REQUEST
+      );
+    }
 
     newUser.isVerified = true;
     newUser.otp = undefined;
     newUser.otpExpires = undefined;
     await newUser.save({ validateBeforeSave: false });
 
-    return true;
+    const data = {
+      _id: newUser.id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      isVerified: newUser.isVerified,
+    };
+
+    const token = TokenAuthenticator.signToken(data);
+    return Response.successMessage(
+      res,
+      "Email verified successfuly!",
+      token,
+      httpStatus.OK
+    );
   }
 
   static loginService = async (req, res, next) => {

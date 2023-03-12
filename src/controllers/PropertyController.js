@@ -18,13 +18,28 @@ class PropertyController {
     );
   });
 
+  // static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
+  //   const houses = await PropertyService.getAllAvailableProperties();
+
+  //   return Response.successMessage(
+  //     res,
+  //     "All available properties",
+  //     houses,
+  //     httpStatus.OK
+  //   );
+  // });
+
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
-    const houses = await PropertyService.getAllAvailableProperties();
+    const { page, perPage } = req.query;
+    const properties = await PropertyService.getAllAvailableProperties(
+      perPage,
+      page
+    );
 
     return Response.successMessage(
       res,
       "All available properties",
-      houses,
+      properties,
       httpStatus.OK
     );
   });
