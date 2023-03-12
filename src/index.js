@@ -24,7 +24,7 @@ app.use("/api/v1/properties", propertyRoutes);
 //   });
 // });
 
-const PORT = process.env.PORT | 5000;
+const PORT = process.env.PORT | 4000;
 
 app.listen(PORT, console.log(`Server Started on Port ${PORT}`));
 
