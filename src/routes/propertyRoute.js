@@ -12,6 +12,7 @@ router.post(
   PropertyController.addProperty
 );
 router.get("/", PropertyController.getAllAvailableProperties);
+
 router.get(
   "/my-properties",
   protectedRoute,

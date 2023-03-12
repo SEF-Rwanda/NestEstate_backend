@@ -7,8 +7,24 @@ class PropertyService {
   };
 
   // get all available properties
-  static getAllAvailableProperties = async () => {
-    return await Property.find({ isAvailable: true });
+  // static getAllAvailableProperties = async () => {
+  //   return await Property.find({ isAvailable: true }).sort({ createdAt: -1 });
+  // };
+
+  static getAllAvailableProperties = async (perPage, page) => {
+    const options = {
+      skip: (page - 1) * perPage,
+      limit: perPage,
+      sort: { createdAt: -1 },
+    };
+
+    const properties = await Property.find(
+      { isAvailable: true },
+      null,
+      options
+    );
+
+    return properties;
   };
 
   // view user properties
