@@ -25,5 +25,6 @@ router.post("/verifyEmail", protectedRoute, UserController.verifyEmail);
 router.put("/profile/:id", UserController.updateUserProfile);
 
 router.get("/profile/:id", UserController.getUserProfile);
+router.get("/", UserController.getAllUsers);
 
 export default router;

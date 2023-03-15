@@ -191,6 +191,17 @@ class UserController {
       );
     }
   });
+
+  static getAllUsers = catchAsyncError(async (req, res, next) => {
+    const users = await UserService.getAllUsers(req, res,next);
+
+    return Response.successMessage(
+      res,
+      "All available users",
+      users,
+      httpStatus.OK
+    );
+  });
 }
 
 export default UserController;
