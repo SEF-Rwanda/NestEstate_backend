@@ -19,7 +19,6 @@ class PropertyService {
       null,
       options
     );
-
     return properties;
   };
 
@@ -94,16 +93,11 @@ class PropertyService {
             url: newImage.secure_url
         }
       }
-
       await property.save({ validateBeforeSave: false });
       return property;
-
     } catch (error) {
       console.log(error.message);
     }
-
-    
-
   };
 }
 
