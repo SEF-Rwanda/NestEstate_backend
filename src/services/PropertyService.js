@@ -7,11 +7,6 @@ class PropertyService {
     return await Property.create(req.body);
   };
 
-  // get all available properties
-  // static getAllAvailableProperties = async () => {
-  //   return await Property.find({ isAvailable: true }).sort({ createdAt: -1 });
-  // };
-
   static getAllAvailableProperties = async (perPage, page) => {
     const options = {
       skip: (page - 1) * perPage,

@@ -12,7 +12,6 @@ const propertySchema = new mongoose.Schema(
     },
     section: {
       type: String,
-      required: [true, "Section is required!"],
     },
     price: {
       type: String,
@@ -86,6 +85,10 @@ const propertySchema = new mongoose.Schema(
     isAvailable: {
       type: Boolean,
       default: true,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
     },
     postedBy: {
       type: mongoose.Schema.ObjectId,
