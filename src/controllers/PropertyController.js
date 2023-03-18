@@ -36,12 +36,21 @@ class PropertyController {
       page
     );
 
-    return Response.successMessage(
-      res,
-      "All available properties",
-      properties,
-      httpStatus.OK
-    );
+    const totalProperties = await PropertyService.countAllAvailableProperties();
+
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "All available properties",
+      totalProperties,
+      data: properties,
+    });
+    // return Response.successMessage(
+    //   res,
+    //   "All available properties",
+    //   properties,
+    //   page,
+    //   httpStatus.OK
+    // );
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
@@ -104,7 +113,6 @@ class PropertyController {
       );
     }
   });
-  
 }
 
 export default PropertyController;

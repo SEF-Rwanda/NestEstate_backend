@@ -37,6 +37,11 @@ class PropertyService {
     }
   };
 
+  // count all available properties
+  static countAllAvailableProperties = async () => {
+    return await Property.countDocuments({ isAvailable: true });
+  };
+
 
   // update profile
   static updateProperty = async (req, res, next) => {
