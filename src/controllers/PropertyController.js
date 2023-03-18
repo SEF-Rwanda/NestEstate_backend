@@ -104,6 +104,39 @@ class PropertyController {
       );
     }
   });
+
+  static hideProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.hideProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property hidden successfully",
+      property,
+      httpStatus.OK
+    );
+  });
+
+  static unhideProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.unhideProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property unhidden successfully",
+      property,
+      httpStatus.OK
+    );
+  });
+
+  static approveProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.approveProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property approved successfully",
+      property,
+      httpStatus.OK
+    );
+  });
 }
 
 export default PropertyController;
