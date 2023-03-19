@@ -111,6 +111,7 @@ class UserService {
         lastName: user.lastName,
         email: user.email,
         isVerified: user.isVerified,
+        isAdmin: user.isAdmin,
       };
 
       const token = TokenAuthenticator.signToken(data);
@@ -151,6 +152,11 @@ class UserService {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  static getAllUsers = async (req, res, next) => {
+    const users = await User.find({}).select("-password");
+    return users;
   };
 }
 

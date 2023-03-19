@@ -7,27 +7,6 @@ class PropertyService {
     return await Property.create(req.body);
   };
 
-  // get all available properties
-  // static getAllAvailableProperties = async () => {
-  //   return await Property.find({ isAvailable: true }).sort({ createdAt: -1 });
-  // };
-
-  // static getAllAvailableProperties = async (perPage, page) => {
-  //   const options = {
-  //     skip: (page - 1) * perPage,
-  //     limit: perPage,
-  //     sort: { createdAt: -1 },
-  //   };
-
-  //   const properties = await Property.find(
-  //     { isAvailable: true },
-  //     null,
-  //     options
-  //   );
-
-  //   return properties;
-  // };
-
   static getAllAvailableProperties = async (perPage, page) => {
     const options = {
       skip: (page - 1) * perPage,
@@ -44,14 +23,8 @@ class PropertyService {
       null,
       options
     );
-
     return properties;
   };
-
-  // // view user properties
-  // static getUserProperties = async (req) => {
-  //   return await Property.find({ postedBy: req?.user?._id });
-  // };
 
   static getUserProperties = async (req) => {
     return await Property.find({
@@ -127,7 +100,6 @@ class PropertyService {
           url: newImage.secure_url,
         };
       }
-
       await property.save({ validateBeforeSave: false });
       return property;
     } catch (error) {
