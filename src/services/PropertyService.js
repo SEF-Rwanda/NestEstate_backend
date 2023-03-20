@@ -7,18 +7,68 @@ class PropertyService {
     return await Property.create(req.body);
   };
 
-  static getAllAvailableProperties = async (perPage, page) => {
+  static getAllAvailableProperties = async (
+    perPage,
+    page,
+    priceMin,
+    priceMax,
+    title,
+    description,
+    section,
+    category,
+    size,
+    bedrooms,
+    bathrooms,
+    parking,
+    furnished,
+    internet
+  ) => {
     const options = {
       skip: (page - 1) * perPage,
       limit: perPage,
       sort: { createdAt: -1 },
     };
+    const filter = {};
+
+    if (priceMin && priceMax) {
+      filter.price = { $gte: priceMin, $lte: priceMax };
+    }
+    if (size) {
+      filter.size = size;
+    }
+    if (category) filter.category = category;
+
+    if (section) {
+      filter.section = section;
+    }
+    if (title) {
+      filter.title = { $regex: title, $options: "i" };
+    }
+    if (bedrooms) {
+      filter.bedrooms = bedrooms;
+    }
+    if (bathrooms) {
+      filter.bathrooms = bathrooms;
+    }
+    if (parking) {
+      filter.parking = parking;
+    }
+    if (furnished) {
+      filter.furnished = furnished;
+    }
+    if (internet) {
+      filter.internet = internet;
+    }
+    if (description) {
+      filter.description = { $regex: description, $options: "i" };
+    }
 
     const properties = await Property.find(
-      { isAvailable: true },
+      { isAvailable: true, ...filter },
       null,
       options
     );
+
     return properties;
   };
 
@@ -27,8 +77,8 @@ class PropertyService {
     return await Property.find({ postedBy: req?.user?._id });
   };
 
-   // view single property
-   static getSingleProperty = async (req, res, next) => {
+  // view single property
+  static getSingleProperty = async (req, res, next) => {
     try {
       const property = await Property.findById(req.params.id).orFail();
       return property;
@@ -42,11 +92,10 @@ class PropertyService {
     return await Property.countDocuments({ isAvailable: true });
   };
 
-
   // update profile
   static updateProperty = async (req, res, next) => {
     try {
-      const property_id = req.params.id; 
+      const property_id = req.params.id;
       const property = await Property.findById(property_id).orFail();
 
       property.title = req.body.title || property.title;
@@ -61,42 +110,43 @@ class PropertyService {
       property.bedrooms = req.body.bedrooms || property.bedrooms;
       property.bathrooms = req.body.bathrooms || property.bathrooms;
       property.masterPlanUse = req.body.masterPlanUse || property.masterPlanUse;
-      property.masterPlanLevel = req.body.masterPlanLevel || property.masterPlanLevel;
+      property.masterPlanLevel =
+        req.body.masterPlanLevel || property.masterPlanLevel;
       property.streetAddress = req.body.streetAddress || property.streetAddress;
       property.geoLocation = req.body.geoLocation || property.geoLocation;
-      property.parking=req.body.parking || property.parking;
+      property.parking = req.body.parking || property.parking;
       property.tank = req.body.tank || property.tank;
-      property.furnished = req.body.furnished || property.furnished;;
+      property.furnished = req.body.furnished || property.furnished;
       property.internet = req.body.internet || property.internet;
 
-      if(req.body.category==="Land"){
-        property.bedrooms=0;
-        property.bathrooms=0;
-        property.furnished=false;
-        property.internet=false;
-        property.parking=false;
-        property.tank=false;
+      if (req.body.category === "Land") {
+        property.bedrooms = 0;
+        property.bathrooms = 0;
+        property.furnished = false;
+        property.internet = false;
+        property.parking = false;
+        property.tank = false;
       }
 
       // check if user uploaded main Image
-      if (req.body.mainImage !== '') {
+      if (req.body.mainImage !== "") {
         const ImgId = property.mainImage.public_id;
 
         // delete old image
         if (ImgId) {
-            await cloudinary.uploader.destroy(ImgId);
+          await cloudinary.uploader.destroy(ImgId);
         }
-  
+
         const newImage = await cloudinary.uploader.upload(req.body.mainImage, {
-            folder: "properties",
-            width: 1000,
-            crop: "scale"
+          folder: "properties",
+          width: 1000,
+          crop: "scale",
         });
-  
+
         property.mainImage = {
-            public_id: newImage.public_id,
-            url: newImage.secure_url
-        }
+          public_id: newImage.public_id,
+          url: newImage.secure_url,
+        };
       }
       await property.save({ validateBeforeSave: false });
       return property;
