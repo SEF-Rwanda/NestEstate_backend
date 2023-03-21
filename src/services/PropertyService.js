@@ -7,6 +7,18 @@ class PropertyService {
     return await Property.create(req.body);
   };
 
+  // get all properties in the database as admin
+  static getAllProperties = async (perPage, page) => {
+    const options = {
+      skip: (page - 1) * perPage,
+      limit: perPage,
+      sort: { createdAt: -1 },
+    };
+
+    const properties = await Property.find({}, null, options);
+    return properties;
+  };
+
   static getAllAvailableProperties = async (perPage, page) => {
     const options = {
       skip: (page - 1) * perPage,
@@ -132,7 +144,12 @@ class PropertyService {
     const property_id = req.params.id;
     const property = await Property.findById(property_id).orFail();
 
-    property.isApproved = true;
+    // if a property is approved, change it to unapproved, and vice versa
+    if (property.isApproved) {
+      property.isApproved = false;
+    } else {
+      property.isApproved = true;
+    }
 
     await property.save();
   };

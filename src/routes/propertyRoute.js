@@ -12,6 +12,7 @@ router.post(
   PropertyController.addProperty
 );
 router.get("/", PropertyController.getAllAvailableProperties);
+router.get("/all", PropertyController.getAllProperties);
 
 router.get(
   "/my-properties",

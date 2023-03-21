@@ -137,6 +137,18 @@ class PropertyController {
       httpStatus.OK
     );
   });
+
+  static getAllProperties = catchAsyncError(async (req, res, next) => {
+    const { page, perPage } = req.query;
+    const properties = await PropertyService.getAllProperties(perPage, page);
+
+    return Response.successMessage(
+      res,
+      "All properties",
+      properties,
+      httpStatus.OK
+    );
+  });
 }
 
 export default PropertyController;
