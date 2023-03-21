@@ -62,4 +62,8 @@ export const users = [
     password: "12345678",
     passwordConfirm: "12345678",
   },
+  {
+    lastName: "NGIRINSHUTI",
+    firstName: "Venant",
+  },
 ];

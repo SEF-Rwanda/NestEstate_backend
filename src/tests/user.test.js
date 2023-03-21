@@ -227,6 +227,50 @@ describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
   });
 });
 
+describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
+  it("User updated successfully", async () => {
+    
+    try {
+      const user_id ="6400571004cd83971fecc8f5" //req.params.id;
+      const res = await chai
+        .request(app)
+        .post(`/api/v1/users/profile/${user_id}`)
+        .set("Accept", "application/json")
+        .send(users[8]);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "User updated successfully!"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("4 . POST get all users,/api/v1/users", () => {
+  it("Should get all users", async () => {
+    
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/users`)
+        .set("Accept", "application/json")
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "Users retrieved successfully!"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
 after(() => {
   mongoServer.stop();
 });
