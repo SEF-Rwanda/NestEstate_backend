@@ -144,7 +144,7 @@ class UserController {
           res,
           "User profile updated successfully",
           user,
-          httpStatus.CREATED
+          httpStatus.OK
         );
       }
       return Response.errorMessage(

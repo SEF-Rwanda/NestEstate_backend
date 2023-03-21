@@ -70,4 +70,12 @@ export const users = [
     password: "12345678",
     passwordConfirm: "12345678",
   },
+  {
+    lastName: "ventum",
+    firstName: "ventum",
+    email: "ventum@gmail.com",
+    phone: "07884635521",
+    password: "12345678",
+    passwordConfirm: "12345678",
+  },
 ];

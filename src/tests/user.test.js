@@ -15,6 +15,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 let mongoServer;
+let user_id;
 
 before(async () => {
   mongoServer = new MongoMemoryServer();
@@ -117,6 +118,7 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .send(users[4]);
       console.log(res.body.data.otp);
       otp = res.body.data.otp;
+      user_id=res.body.data._id
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
@@ -281,6 +283,48 @@ describe("user unit test", () => {
   it("test empty phone", () => {
     const actual = checkEmailValidity(users[3]);
     expect(actual).to.equal(false);
+  });
+});
+
+describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
+  it("User updated successfully", async () => {
+    
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/users/profile/${user_id}`)
+        .set("Accept", "application/json")
+        .send(users[9]);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "User profile updated successfully"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("4 . POST get all users,/api/v1/users", () => {
+  it("Should get all users", async () => {
+    
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/users`)
+        .set("Accept", "application/json")
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "All available users"
+      );
+    } catch (error) {
+      console.error(error);
+    }
   });
 });
 
