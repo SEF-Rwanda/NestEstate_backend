@@ -30,10 +30,37 @@ class PropertyController {
   // });
 
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
-    const { page, perPage } = req.query;
+    const {
+      perPage,
+      page,
+      priceMin,
+      priceMax,
+      title,
+      description,
+      section,
+      category,
+      size,
+      bedrooms,
+      bathrooms,
+      parking,
+      furnished,
+      internet,
+    } = req.query;
     const properties = await PropertyService.getAllAvailableProperties(
       perPage,
-      page
+      page,
+      parseInt(priceMin),
+      parseInt(priceMax),
+      title,
+      description,
+      section,
+      category,
+      size,
+      bedrooms,
+      bathrooms,
+      parking,
+      furnished,
+      internet
     );
 
     const totalProperties = await PropertyService.countAllAvailableProperties();
