@@ -14,27 +14,21 @@ class UserController {
   static createUser = catchAsyncError(async (req, res) => {
     try {
       const newUser = await UserService.createUser(req, res);
-      if (newUser) {
-        newUser.password = "";
-        const { password, ...data } = newUser;
 
-        const token = TokenAuthenticator.signToken(data._doc);
+      newUser.password = "";
+      const { password, ...data } = newUser;
 
-        const newData = { ...data._doc, token };
+      const token = TokenAuthenticator.signToken(data._doc);
 
-        const response = await Email.verificationEmail(req, data._doc);
+      const newData = { ...data._doc, token };
 
-        return Response.successMessage(
-          res,
-          "User created successfully,proceed to verify you account",
-          newData,
-          httpStatus.CREATED
-        );
-      }
-      return Response.errorMessage(
+      const response = await Email.verificationEmail(req, data._doc);
+
+      return Response.successMessage(
         res,
-        "Something went wrong,please try again",
-        httpStatus.BAD_REQUEST
+        "User created successfully,proceed to verify you account",
+        newData,
+        httpStatus.CREATED
       );
     } catch (error) {
       return Response.errorMessage(
@@ -137,8 +131,8 @@ class UserController {
     return UserService.logoutService(req, res);
   });
 
-  static verifyEmail = catchAsyncError(async (req,res) => {
-    return await UserService.verifyUser(req,res);
+  static verifyEmail = catchAsyncError(async (req, res) => {
+    return await UserService.verifyUser(req, res);
   });
 
   static updateUserProfile = catchAsyncError(async (req, res) => {
