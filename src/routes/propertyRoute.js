@@ -2,13 +2,14 @@ import express from "express";
 import PropertyController from "../controllers/PropertyController";
 import protectedRoute from "../middlewares/protectRoute";
 import isUserVerified from "../middlewares/isUserVerified";
-
+import checkProperty from "../middlewares/checkPropertyData";
 const router = express.Router();
 
 router.post(
   "/",
   protectedRoute,
   isUserVerified,
+  checkProperty,
   PropertyController.addProperty
 );
 router.get("/", PropertyController.getAllAvailableProperties);

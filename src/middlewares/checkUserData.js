@@ -11,7 +11,7 @@ const checkUserData = (user) => {
   ) {
     return false;
   }
-  return false;
+  return true;
 };
 
 export default checkUserData;
