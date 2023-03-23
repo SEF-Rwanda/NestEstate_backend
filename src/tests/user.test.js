@@ -427,6 +427,24 @@ describe("create property", () => {
     }
   });
 });
+describe("get properties", () => {
+  it("get properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/properties")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+      expect(res.body).haveOwnProperty("data");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
 
 describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
   it("User updated successfully", async () => {
