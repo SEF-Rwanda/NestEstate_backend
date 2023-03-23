@@ -4,6 +4,8 @@ import ValidateLoginInfo from "../middlewares/validateLoginInfo";
 import bcrypt from "bcryptjs";
 import httpStatus from "http-status";
 import Response from "../utils/Response";
+import checkEmailValidity from "../middlewares/checkEmailValidity";
+import checkUserData from "../middlewares/checkUserData";
 
 class UserService {
   /**
@@ -43,10 +45,9 @@ class UserService {
   static async verifyUser(req, res) {
     const { otp } = req.body;
     const { user } = req;
-
     const newUser = await User.findOne({
       _id: user._id,
-      otp,
+      otp: otp,
       otpExpires: { $gt: Date.now() },
     });
 
@@ -54,14 +55,6 @@ class UserService {
       return Response.errorMessage(
         res,
         "Invalid code or has expired!.",
-        httpStatus.BAD_REQUEST
-      );
-    }
-
-    if (newUser.isVerified) {
-      return Response.errorMessage(
-        res,
-        "This is already verified!.",
         httpStatus.BAD_REQUEST
       );
     }
@@ -82,7 +75,7 @@ class UserService {
     const token = TokenAuthenticator.signToken(data);
     return Response.successMessage(
       res,
-      "Email verified successfuly!",
+      "Email verified successfully!",
       token,
       httpStatus.OK
     );

@@ -3,17 +3,25 @@ import HttpStatus from "http-status";
 import Response from "../utils/Response";
 
 class NewUserDataChecker {
-  static validateCredentials = async (req, res, next) => {
-    const { email, phone } = req.body;
-    const result = await User.findOne({ phone: phone });
+  static validateEmail = async (req, res, next) => {
+    const { email } = req.body;
+    const result = await User.findOne({ email });
 
-    if (result && result.email === email) {
+    if (result) {
       return Response.errorMessage(
         res,
         "Account associated with this email already exists",
         HttpStatus.CONFLICT
       );
-    } else if (result && result.phone === phone) {
+    }
+
+    next();
+  };
+  static validatePhone = async (req, res, next) => {
+    const { phone } = req.body;
+    const result = await User.findOne({ phone: phone });
+
+    if (result) {
       return Response.errorMessage(
         res,
         "Account associated with this phone already exists",

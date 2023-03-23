@@ -6,7 +6,7 @@ class PropertyService {
     req.body.postedBy = req?.user?._id;
     return await Property.create(req.body);
   };
-
+  
   // get all properties in the database as admin
   static getAllProperties = async (perPage, page) => {
     const options = {
@@ -19,22 +19,69 @@ class PropertyService {
     return properties;
   };
 
-  static getAllAvailableProperties = async (perPage, page) => {
+ 
+  static getAllAvailableProperties = async (
+    perPage,
+    page,
+    priceMin,
+    priceMax,
+    title,
+    description,
+    section,
+    category,
+    size,
+    bedrooms,
+    bathrooms,
+    parking,
+    furnished,
+    internet
+  ) => {
     const options = {
       skip: (page - 1) * perPage,
       limit: perPage,
       sort: { createdAt: -1 },
     };
+    const filter = {};
+
+    if (priceMin && priceMax) {
+      filter.price = { $gte: priceMin, $lte: priceMax };
+    }
+    if (size) {
+      filter.size = size;
+    }
+    if (category) filter.category = category;
+
+    if (section) {
+      filter.section = section;
+    }
+    if (title) {
+      filter.title = { $regex: title, $options: "i" };
+    }
+    if (bedrooms) {
+      filter.bedrooms = bedrooms;
+    }
+    if (bathrooms) {
+      filter.bathrooms = bathrooms;
+    }
+    if (parking) {
+      filter.parking = parking;
+    }
+    if (furnished) {
+      filter.furnished = furnished;
+    }
+    if (internet) {
+      filter.internet = internet;
+    }
+    if (description) {
+      filter.description = { $regex: description, $options: "i" };
+    }
 
     const properties = await Property.find(
-      {
-        isAvailable: true,
-        isHidden: false,
-        isApproved: true,
-      },
+      { isAvailable: true,isAvailable: true, isHidden:false, ...filter },
       null,
       options
     );
+
     return properties;
   };
 
@@ -54,6 +101,11 @@ class PropertyService {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  // count all available properties
+  static countAllAvailableProperties = async () => {
+    return await Property.countDocuments({ isAvailable: true });
   };
 
   // update profile

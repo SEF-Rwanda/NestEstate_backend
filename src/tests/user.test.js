@@ -6,15 +6,16 @@ import app from "../index";
 import httpStatus from "http-status";
 import { users } from "./userCases";
 import dotenv from "dotenv";
+import checkUserData from "../middlewares/checkUserData";
+import checkEmailValidity from "../middlewares/checkEmailValidity";
 
 dotenv.config({ path: "./.env" });
-let verificationToken;
-var opt;
 
 const { expect } = chai;
 chai.use(chaiHttp);
 
 let mongoServer;
+let user_id;
 
 before(async () => {
   mongoServer = new MongoMemoryServer();
@@ -79,6 +80,7 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .post("/api/v1/users/signup")
         .set("Accept", "application/json")
         .send(users[2]);
+      console.log(res.body);
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(500);
       expect(res.body.status).to.equal(500);
@@ -116,6 +118,7 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .send(users[4]);
       console.log(res.body.data.otp);
       otp = res.body.data.otp;
+      user_id=res.body.data._id
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
@@ -154,10 +157,10 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .set("Accept", "application/json")
         .send(users[6]);
       expect(res.body).to.be.an("object");
-      expect(res.status).to.equal(httpStatus.INTERNAL_SERVER_ERROR);
-      expect(res.body.status).to.equal(httpStatus.INTERNAL_SERVER_ERROR);
+      expect(res.status).to.equal(httpStatus.CONFLICT);
+      expect(res.body.status).to.equal(httpStatus.CONFLICT);
       expect(res.body.error).to.equal(
-        'E11000 duplicate key error collection: test.users index: phone_1 dup key: { phone: "0781475108" }'
+        "Account associated with this phone already exists"
       );
     } catch (error) {
       console.error(error.message);
@@ -207,7 +210,7 @@ describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
     }
   });
 
-  it("User token not found", async () => {
+  it("You can not proceed without setting a valid token", async () => {
     try {
       const res = await chai
         .request(app)
@@ -220,6 +223,104 @@ describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
       expect(res.body.status).to.equal(httpStatus.INTERNAL_SERVER_ERROR);
       expect(res.body.error).to.equal(
         "You can not proceed without setting a valid token"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("You can not proceed without setting a valid token", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/users/verifyEmail")
+        .set("authorization", `Bearer ${token}`)
+        .set("Accept", "application/json")
+        .send({ otp: "8900" });
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.error).to.equal("Invalid code or has expired!.");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Email verified successfully!", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/users/verifyEmail")
+        .set("authorization", `Bearer ${token}`)
+        .set("Accept", "application/json")
+        .send({ otp: otp });
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(200);
+      expect(res.body.message).to.equal("Email verified successfully!");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("user unit test", () => {
+  it("test empty firstName", () => {
+    const actual = checkUserData(users[0]);
+    expect(actual).to.equal(false);
+  });
+  it("test empty lastName", () => {
+    const actual = checkUserData(users[1]);
+    expect(actual).to.equal(false);
+  });
+  it("test empty email", () => {
+    const actual = checkUserData(users[2]);
+    expect(actual).to.equal(false);
+  });
+
+  it("test empty phone", () => {
+    const actual = checkUserData(users[8]);
+    expect(actual).to.equal(false);
+  });
+  it("test empty phone", () => {
+    const actual = checkEmailValidity(users[3]);
+    expect(actual).to.equal(false);
+  });
+});
+
+describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
+  it("User updated successfully", async () => {
+    
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/users/profile/${user_id}`)
+        .set("Accept", "application/json")
+        .send(users[9]);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "User profile updated successfully"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("4 . POST get all users,/api/v1/users", () => {
+  it("Should get all users", async () => {
+    
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/users`)
+        .set("Accept", "application/json")
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal(
+        "All available users"
       );
     } catch (error) {
       console.error(error);

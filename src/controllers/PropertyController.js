@@ -17,31 +17,50 @@ class PropertyController {
       httpStatus.CREATED
     );
   });
-
-  // static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
-  //   const houses = await PropertyService.getAllAvailableProperties();
-
-  //   return Response.successMessage(
-  //     res,
-  //     "All available properties",
-  //     houses,
-  //     httpStatus.OK
-  //   );
-  // });
-
+  
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
-    const { page, perPage } = req.query;
+    const {
+      perPage,
+      page,
+      priceMin,
+      priceMax,
+      title,
+      description,
+      section,
+      category,
+      size,
+      bedrooms,
+      bathrooms,
+      parking,
+      furnished,
+      internet,
+    } = req.query;
     const properties = await PropertyService.getAllAvailableProperties(
       perPage,
-      page
+      page,
+      parseInt(priceMin),
+      parseInt(priceMax),
+      title,
+      description,
+      section,
+      category,
+      size,
+      bedrooms,
+      bathrooms,
+      parking,
+      furnished,
+      internet
     );
 
-    return Response.successMessage(
-      res,
-      "All available properties",
-      properties,
-      httpStatus.OK
-    );
+    const totalProperties = await PropertyService.countAllAvailableProperties();
+
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "All available properties",
+      totalProperties,
+      data: properties,
+    });
+  
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
@@ -105,6 +124,7 @@ class PropertyController {
     }
   });
 
+
   static hideProperty = catchAsyncError(async (req, res, next) => {
     const property = await PropertyService.hideProperty(req);
 
@@ -149,6 +169,7 @@ class PropertyController {
       httpStatus.OK
     );
   });
+
 }
 
 export default PropertyController;

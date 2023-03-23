@@ -14,12 +14,12 @@ const propertySchema = new mongoose.Schema(
       type: String,
     },
     price: {
-      type: String,
+      type: Number,
       required: [true, "Price is required!"],
     },
 
     size: {
-      type: String,
+      type: Number,
       required: [true, "Size is required!"],
     },
     upi: {
