@@ -17,18 +17,7 @@ class PropertyController {
       httpStatus.CREATED
     );
   });
-
-  // static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
-  //   const houses = await PropertyService.getAllAvailableProperties();
-
-  //   return Response.successMessage(
-  //     res,
-  //     "All available properties",
-  //     houses,
-  //     httpStatus.OK
-  //   );
-  // });
-
+  
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
     const {
       perPage,
@@ -71,13 +60,7 @@ class PropertyController {
       totalProperties,
       data: properties,
     });
-    // return Response.successMessage(
-    //   res,
-    //   "All available properties",
-    //   properties,
-    //   page,
-    //   httpStatus.OK
-    // );
+  
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
@@ -140,6 +123,53 @@ class PropertyController {
       );
     }
   });
+
+
+  static hideProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.hideProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property hidden successfully",
+      property,
+      httpStatus.OK
+    );
+  });
+
+  static unhideProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.unhideProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property unhidden successfully",
+      property,
+      httpStatus.OK
+    );
+  });
+
+  static approveProperty = catchAsyncError(async (req, res, next) => {
+    const property = await PropertyService.approveProperty(req);
+
+    return Response.successMessage(
+      res,
+      "Property approved successfully",
+      property,
+      httpStatus.OK
+    );
+  });
+
+  static getAllProperties = catchAsyncError(async (req, res, next) => {
+    const { page, perPage } = req.query;
+    const properties = await PropertyService.getAllProperties(perPage, page);
+
+    return Response.successMessage(
+      res,
+      "All properties",
+      properties,
+      httpStatus.OK
+    );
+  });
+
 }
 
 export default PropertyController;

@@ -33,12 +33,12 @@ const propertySchema = new mongoose.Schema(
     mainImage: {
       public_id: {
         type: String,
-        required: true
+        required: true,
       },
       url: {
-          type: String,
-          required: true
-      }
+        type: String,
+        required: true,
+      },
     },
     otherImages: {
       type: Array,
@@ -46,18 +46,18 @@ const propertySchema = new mongoose.Schema(
     },
     bedrooms: {
       type: Number,
-      default:1
+      default: 1,
     },
     bathrooms: {
       type: Number,
-      default:1
+      default: 1,
     },
     masterPlanUse: {
       type: String,
     },
     masterPlanLevel: {
       type: String,
-      default:"R1"
+      default: "R1",
     },
     streetAddress: {
       type: String,
@@ -68,19 +68,19 @@ const propertySchema = new mongoose.Schema(
     },
     parking: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tank: {
       type: Boolean,
-      default: false
+      default: false,
     },
     furnished: {
       type: Boolean,
-      default:false
+      default: false,
     },
     internet: {
       type: Boolean,
-      default:false
+      default: false,
     },
     isAvailable: {
       type: Boolean,
@@ -98,6 +98,16 @@ const propertySchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+    },
+
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+
+    isHidden: {
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -6,7 +6,20 @@ class PropertyService {
     req.body.postedBy = req?.user?._id;
     return await Property.create(req.body);
   };
+  
+  // get all properties in the database as admin
+  static getAllProperties = async (perPage, page) => {
+    const options = {
+      skip: (page - 1) * perPage,
+      limit: perPage,
+      sort: { createdAt: -1 },
+    };
 
+    const properties = await Property.find({}, null, options);
+    return properties;
+  };
+
+ 
   static getAllAvailableProperties = async (
     perPage,
     page,
@@ -64,7 +77,7 @@ class PropertyService {
     }
 
     const properties = await Property.find(
-      { isAvailable: true, ...filter },
+      { isAvailable: true,isAvailable: true, isHidden:false, ...filter },
       null,
       options
     );
@@ -72,9 +85,12 @@ class PropertyService {
     return properties;
   };
 
-  // view user properties
   static getUserProperties = async (req) => {
-    return await Property.find({ postedBy: req?.user?._id });
+    return await Property.find({
+      postedBy: req?.user?._id,
+      isHidden: false,
+      isApproved: true,
+    });
   };
 
   // view single property
@@ -153,6 +169,41 @@ class PropertyService {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  // Hide a property
+  static hideProperty = async (req) => {
+    const property_id = req.params.id;
+    const property = await Property.findById(property_id).orFail();
+
+    property.isHidden = true;
+
+    await property.save();
+  };
+
+  // admin to unhide a property
+  static unhideProperty = async (req) => {
+    const property_id = req.params.id;
+    const property = await Property.findById(property_id).orFail();
+
+    property.isHidden = false;
+
+    await property.save();
+  };
+
+  // Approve a property by only admin
+  static approveProperty = async (req) => {
+    const property_id = req.params.id;
+    const property = await Property.findById(property_id).orFail();
+
+    // if a property is approved, change it to unapproved, and vice versa
+    if (property.isApproved) {
+      property.isApproved = false;
+    } else {
+      property.isApproved = true;
+    }
+
+    await property.save();
   };
 }
 
