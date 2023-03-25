@@ -279,7 +279,7 @@ describe("2 . POST Login,/api/v1/users/login", () => {
       console.error(error);
     }
   });
-  it("invalid email ", async () => {
+  it("Incorrect  email ", async () => {
     try {
       const res = await chai
         .request(app)
@@ -292,7 +292,7 @@ describe("2 . POST Login,/api/v1/users/login", () => {
       console.error(error);
     }
   });
-  it("invalid password ", async () => {
+  it("incorrect password ", async () => {
     try {
       const res = await chai
         .request(app)
@@ -465,17 +465,33 @@ describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
 });
 
 describe("4 . POST get all users,/api/v1/users", () => {
+  let id = null;
   it("Should get all users", async () => {
     try {
       const res = await chai
         .request(app)
         .get(`/api/v1/users`)
         .set("Accept", "application/json");
+      id = res.body.data[0]._id;
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body.status).to.equal(httpStatus.OK);
       expect(res.body.message).to.equal("All available users");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Should get user profile", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/users/profile/${id}`)
+        .set("Accept", "application/json");
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal("User profile retrieved successfully");
     } catch (error) {
       console.error(error);
     }

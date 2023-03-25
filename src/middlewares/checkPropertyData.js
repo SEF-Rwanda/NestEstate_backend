@@ -20,3 +20,5 @@ const checkProperty = (req, res, next) => {
 };
 
 export default checkProperty;
+
+
