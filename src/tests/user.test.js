@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 import checkUserData from "../middlewares/checkUserData";
 import checkEmailValidity from "../middlewares/checkEmailValidity";
 import { properties } from "./propertiesCases";
+import checkEnv from "../utils/checkTestEnv";
+
 dotenv.config({ path: "./.env" });
 
 const { expect } = chai;
@@ -313,10 +315,27 @@ describe("2 . POST Login,/api/v1/users/login", () => {
         .set("Accept", "application/json")
         .send({
           email: "ngirimanaschadrackgmail.com",
-          password: "123456789",
+          password: "12345678",
         });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Unverified user ", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/users/login")
+        .set("Accept", "application/json")
+        .send({
+          email: "chadrackngirimana@gmail.com",
+          password: "12345678",
+        });
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.NOT_FOUND);
+      expect(res.body.error).to.equal("The user is not verified");
     } catch (error) {
       console.error(error);
     }
@@ -351,6 +370,18 @@ describe("user unit test", () => {
   });
   it("Check  invalid email", () => {
     const actual = checkEmailValidity(users[10]);
+    expect(actual).to.equal(false);
+  });
+  it("check if env is TEST", () => {
+    const actual = checkEnv("TEST","TEST");
+    expect(actual).to.equal(true);
+  });
+  it("check if env is not TEST", () => {
+    const actual = checkEnv("DEV","TEST");
+    expect(actual).to.equal(false);
+  });
+  it("check if env is not TEST", () => {
+    const actual = checkEnv(undefined, "TEST");
     expect(actual).to.equal(false);
   });
 });
@@ -462,9 +493,24 @@ describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
       console.error(error);
     }
   });
+  it("User updated with invalid id", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/users/profile/63ffd0082e32e9e7c8d223c2`)
+        .set("Accept", "application/json")
+        .send(users[9]);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.error).to.equal("Something went wrong,please try again");
+    } catch (error) {
+      console.error(error);
+    }
+  });
 });
 
-describe("4 . POST get all users,/api/v1/users", () => {
+describe("4 . GET all users,/api/v1/users", () => {
   let id = null;
   it("Should get all users", async () => {
     try {
@@ -492,6 +538,102 @@ describe("4 . POST get all users,/api/v1/users", () => {
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body.status).to.equal(httpStatus.OK);
       expect(res.body.message).to.equal("User profile retrieved successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Should get user profile", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/users/profile/63ffd0082e32e9e7c8d223c2`)
+        .set("Accept", "application/json");
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.error).to.equal("Something went wrong,please try again");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Logout", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post(`/api/v1/users/logout`)
+        .set("Accept", "application/json");
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      // expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal("Logged out successfully"); //
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("forgot and reset", () => {
+  let resetToken = null;
+  it("Forgot password with valid email", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post(`/api/v1/users/forgotPassword`)
+        .set("Accept", "application/json")
+        .send({ email: "ngirimanaschadrack@gmail.com" });
+      resetToken = res.body.resetToken;
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal("Token sent to email!");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("Forgot password with invalid email", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post(`/api/v1/users/forgotPassword`)
+        .set("Accept", "application/json")
+        .send({ email: "ngirimanaschadrak@gmail.com" });
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.NOT_FOUND);
+      expect(res.body.status).to.equal(httpStatus.NOT_FOUND);
+      expect(res.body.error).to.equal("There is no user with email address.");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("reset password with valid token", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .patch(`/api/v1/users/resetPassword/${resetToken}`)
+        .set("Accept", "application/json")
+        .send({ password: "1234567890", passwordConfirm: "1234567890" });
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal("Password reset successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("reset password with invalid token", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .patch(`/api/v1/users/resetPassword/{resetToken}`)
+        .set("Accept", "application/json")
+        .send({ password: "1234567890", passwordConfirm: "1234567890" });
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
+      expect(res.body.error).to.equal("Token is invalid or has expired");
     } catch (error) {
       console.error(error);
     }

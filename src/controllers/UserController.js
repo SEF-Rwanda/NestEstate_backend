@@ -69,7 +69,7 @@ class UserController {
     const response = await Email.resetPasswordEmail(req, user, message);
 
     res.status(200).json({
-      status: "success",
+      status: httpStatus.OK,
       resetToken,
       message: "Token sent to email!",
     });
@@ -116,7 +116,7 @@ class UserController {
       .digest("hex");
 
     res.status(200).json({
-      status: "success",
+      status: httpStatus.OK,
       newToken,
 
       message: "Password reset successfully",
