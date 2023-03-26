@@ -97,22 +97,22 @@ class UserService {
     if (!isValid) {
       return res.status(401).send("Password is incorrect");
     }
-    if (user.isVerified === true) {
-      const data = {
-        _id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isVerified: user.isVerified,
-        isAdmin: user.isAdmin,
-      };
-
-      const token = TokenAuthenticator.signToken(data);
-      return res.header("auth-token", token).send({
-        token,
-      });
+    if (user.isVerified !== true) {
+      return res.status(404).send({ error: "The user is not verified" });
     }
-    return res.status(404).send("The user is not verified");
+    const data = {
+      _id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      isVerified: user.isVerified,
+      isAdmin: user.isAdmin,
+    };
+
+    const token = TokenAuthenticator.signToken(data);
+    return res.header("auth-token", token).send({
+      token,
+    });
   };
 
   static logoutService = (req, res) => {
@@ -120,7 +120,7 @@ class UserService {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
     });
-    res.status(200).json({ status: "Logged out successfully" });
+    res.status(200).json({ message: "Logged out successfully" });
   };
 
   static getUserProfile = async (req, res, next) => {
