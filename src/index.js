@@ -5,6 +5,8 @@ import cors from "cors";
 import dbConnection from "./config/config";
 import userRoutes from "./routes/userRouter";
 import propertyRoutes from "./routes/propertyRoute";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "../swagger";
 
 dotenv.config({ path: "./.env" });
 
@@ -13,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 dbConnection();
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/properties", propertyRoutes);
 

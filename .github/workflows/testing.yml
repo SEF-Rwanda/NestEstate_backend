@@ -1,0 +1,54 @@
+name: Real estate application 
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm run test
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDGRID_SENDER: ${{ secrets.SENDGRID_SENDER }}
+          JWT_KEY: ${{ secrets.JWT_KEY}}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME}}
+          CLOUD_KEY: ${{ secrets.CLOUD_KEY }}
+          CLOUD_KEY_SECRET: ${{ secrets.CLOUD_KEY_SECRET }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  
+
+  
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: Installing dependency
+        run: npm install
+      - name: Deploy
+        run: echo "Deployed ....."
+
+
+      
+

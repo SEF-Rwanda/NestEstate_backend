@@ -12,6 +12,23 @@ router.post(
   checkProperty,
   PropertyController.addProperty
 );
+
+/**
+ * @swagger
+ * /api/v1/properties:
+ *   get:
+ *     summary: Returns a list of all properties.
+ *     responses:
+ *       200:
+ *         description: A list of properties.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *
+ */
 router.get("/", PropertyController.getAllAvailableProperties);
 router.get("/all", PropertyController.getAllProperties);
 
