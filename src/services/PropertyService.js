@@ -77,7 +77,7 @@ class PropertyService {
     }
 
     const properties = await Property.find(
-      { isAvailable: true,isAvailable: true, isHidden:false, ...filter },
+      { isAvailable: true, isApproved: true, isHidden:false, ...filter },
       null,
       options
     );
