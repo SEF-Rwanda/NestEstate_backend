@@ -32,7 +32,6 @@ router.post(
  */
 router.get("/", PropertyController.getAllAvailableProperties);
 router.get("/all", PropertyController.getAllProperties);
-
 router.get(
   "/my-properties",
   protectedRoute,
@@ -71,4 +70,6 @@ router.put(
   isUserVerified,
   PropertyController.approveProperty
 );
+
+router.get("/ ", PropertyController.getAllCount);
 export default router;
