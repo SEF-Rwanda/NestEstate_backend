@@ -6,7 +6,7 @@ class PropertyService {
     req.body.postedBy = req?.user?._id;
     return await Property.create(req.body);
   };
-  
+
   // get all properties in the database as admin
   static getAllProperties = async (perPage, page) => {
     const options = {
@@ -19,7 +19,6 @@ class PropertyService {
     return properties;
   };
 
- 
   static getAllAvailableProperties = async (
     perPage,
     page,
@@ -77,7 +76,7 @@ class PropertyService {
     }
 
     const properties = await Property.find(
-      { isAvailable: true, isApproved: true, isHidden:false, ...filter },
+      { isAvailable: true, isApproved: true, isHidden: false, ...filter },
       null,
       options
     );
@@ -105,7 +104,11 @@ class PropertyService {
 
   // count all available properties
   static countAllAvailableProperties = async () => {
-    return await Property.countDocuments({ isAvailable: true });
+    return await Property.countDocuments({
+      isAvailable: true,
+      isApproved: true,
+      isHidden: false,
+    });
   };
 
   // update profile
