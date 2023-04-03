@@ -151,6 +151,21 @@ class UserService {
     const users = await User.find({}).select("-password");
     return users;
   };
+
+  // Approve a property by only admin
+  static makeUserAdmin = async (req) => {
+    const user_id = req.params.id;
+    const user = await User.findById(user_id).orFail();
+
+    // if a property is approved, change it to unapproved, and vice versa
+    if (user.isAdmin === true) {
+      user.isAdmin = false;
+    } else {
+      user.isAdmin = true;
+    }
+
+    await user.save({ validateBeforeSave: false });
+  };
 }
 
 export default UserService;

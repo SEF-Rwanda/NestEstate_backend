@@ -196,6 +196,16 @@ class UserController {
       httpStatus.OK
     );
   });
+
+  static makeUserAdmin = catchAsyncError(async (req, res, next) => {
+    const user = await UserService.makeUserAdmin(req);
+    return Response.successMessage(
+      res,
+      "User privilege updated successfully",
+      user,
+      httpStatus.OK
+    );
+  });
 }
 
 export default UserController;
