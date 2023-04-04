@@ -3,6 +3,7 @@ import PropertyController from "../controllers/PropertyController";
 import protectedRoute from "../middlewares/protectRoute";
 import isUserVerified from "../middlewares/isUserVerified";
 import checkProperty from "../middlewares/checkPropertyData";
+
 const router = express.Router();
 
 router.post(
