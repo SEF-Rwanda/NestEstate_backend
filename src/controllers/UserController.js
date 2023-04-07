@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import Email from "../utils/Email";
 import TokenAuthenticator from "./../utils/TokenAuthenticator";
 import crypto from "crypto";
+import moment from "moment";
 
 dotenv.config();
 
@@ -187,14 +188,42 @@ class UserController {
   });
 
   static getAllUsers = catchAsyncError(async (req, res, next) => {
-    const users = await UserService.getAllUsers(req, res,next);
+    const { page, perPage, startDate, endDate } = req.query;
+    // Validate input dates using moment.js library
 
-    return Response.successMessage(
-      res,
-      "All available users",
-      users,
-      httpStatus.OK
-    );
+    try {
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
+
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+      }
+      const users = await UserService.getAllUsers(
+        perPage,
+        page,
+        startDateObj,
+        endDateObj
+      );
+
+      return Response.successMessage(res, "All users", users, httpStatus.OK);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
   static makeUserAdmin = catchAsyncError(async (req, res, next) => {
