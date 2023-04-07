@@ -1,5 +1,6 @@
 import Property from "../models/propertyModel";
 import cloudinary from "../utils/cloudinary";
+import moment from "moment";
 
 class PropertyService {
   static addProperty = async (req) => {
@@ -8,14 +9,18 @@ class PropertyService {
   };
 
   // get all properties in the database as admin
-  static getAllProperties = async (perPage, page) => {
+  static getAllProperties = async (perPage, page, startDate, endDate) => {
     const options = {
       skip: (page - 1) * perPage,
       limit: perPage,
       sort: { createdAt: -1 },
     };
 
-    const properties = await Property.find({}, null, options);
+    let filter = {}
+    if (startDate && endDate) {
+      filter.createdAt = { $gte: startDate, $lte: endDate };
+    }
+    const properties = await Property.find(filter, null, options);
     return properties;
   };
 

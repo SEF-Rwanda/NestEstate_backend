@@ -30,8 +30,7 @@ router.post(
  *
  */
 router.get("/", PropertyController.getAllAvailableProperties);
-// router.get("/all", PropertyController.getAllProperties);
-
+router.get("/all", PropertyController.getAllProperties);
 router.get(
   "/my-properties",
   protectedRoute,

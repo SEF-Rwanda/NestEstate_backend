@@ -3,6 +3,8 @@ import PropertyService from "../services/PropertyService.js";
 import catchAsyncError from "../utils/catchAsyncError";
 import Response from "../utils/Response";
 import dotenv from "dotenv";
+import moment from "moment";
+import Property from "../models/propertyModel.js";
 
 dotenv.config();
 
@@ -157,23 +159,45 @@ class PropertyController {
   });
 
   static getAllProperties = catchAsyncError(async (req, res, next) => {
-    const { page, perPage } = req.query;
-    const properties = await PropertyService.getAllProperties(perPage, page);
+    const { page, perPage, startDate, endDate } = req.query;
+    // Validate input dates using moment.js library
+    const isValidStartDate = moment(startDate, moment.ISO_8601, true).isValid();
+    const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
 
-    return Response.successMessage(
-      res,
-      "All properties",
-      properties,
-      httpStatus.OK
-    );
+    if (!isValidStartDate || !isValidEndDate) {
+      return res.status(400).json({ message: "Invalid date format" });
+    }
+
+    try {
+      const startDateObj = new Date(startDate);
+      const endDateObj = new Date(endDate);
+
+      // Check if startDateObj and endDateObj are valid Date objects
+      if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+        return res.status(400).json({ message: "Invalid date format" });
+      }
+
+      const properties = await PropertyService.getAllProperties(
+        perPage,
+        page,
+        startDateObj,
+        endDateObj
+      );
+
+      return Response.successMessage(
+        res,
+        "All properties",
+        properties,
+        httpStatus.OK
+      );
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
   // get all count for property
   static getAllCount = catchAsyncError(async (req, res, next) => {
-    console.log("====================================");
-    console.log("get all count");
-    console.log("====================================");
-
     const totalProperties = await PropertyService.countAllAvailableProperties();
 
     return res.status(httpStatus.OK).json({
