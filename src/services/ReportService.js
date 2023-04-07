@@ -9,16 +9,15 @@ class ReportService {
    * @returns {object} new user data object
    */
 
-    static countRecords = async (req) => {
-        const users = await User.countDocuments();
-        const properties = await Property.countDocuments();
-        const data = {
-            users,
-            properties
-        }
-        return data;
+  static countRecords = async (req) => {
+    const totalUsers = await User.countDocuments();
+    const totalProperties = await Property.countDocuments();
+    const data = {
+      totalUsers,
+      totalProperties,
     };
+    return data;
+  };
 }
-
 
 export default ReportService;
