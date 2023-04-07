@@ -17,7 +17,7 @@ class PropertyController {
       httpStatus.CREATED
     );
   });
-  
+
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
     const {
       perPage,
@@ -60,7 +60,6 @@ class PropertyController {
       totalProperties,
       data: properties,
     });
-  
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
@@ -124,7 +123,6 @@ class PropertyController {
     }
   });
 
-
   static hideProperty = catchAsyncError(async (req, res, next) => {
     const property = await PropertyService.hideProperty(req);
 
@@ -170,6 +168,20 @@ class PropertyController {
     );
   });
 
+  // get all count for property
+  static getAllCount = catchAsyncError(async (req, res, next) => {
+    console.log("====================================");
+    console.log("get all count");
+    console.log("====================================");
+
+    const totalProperties = await PropertyService.countAllAvailableProperties();
+
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "Counts",
+      counts: totalProperties,
+    });
+  });
 }
 
 export default PropertyController;
