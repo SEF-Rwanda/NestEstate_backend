@@ -16,7 +16,7 @@ class PropertyService {
       sort: { createdAt: -1 },
     };
 
-    let filter = {}
+    let filter = {};
     if (startDate && endDate) {
       filter.createdAt = { $gte: startDate, $lte: endDate };
     }

@@ -161,22 +161,28 @@ class PropertyController {
   static getAllProperties = catchAsyncError(async (req, res, next) => {
     const { page, perPage, startDate, endDate } = req.query;
     // Validate input dates using moment.js library
-    const isValidStartDate = moment(startDate, moment.ISO_8601, true).isValid();
-    const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
-
-    if (!isValidStartDate || !isValidEndDate) {
-      return res.status(400).json({ message: "Invalid date format" });
-    }
 
     try {
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
 
-      // Check if startDateObj and endDateObj are valid Date objects
-      if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-        return res.status(400).json({ message: "Invalid date format" });
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
       }
-
       const properties = await PropertyService.getAllProperties(
         perPage,
         page,
