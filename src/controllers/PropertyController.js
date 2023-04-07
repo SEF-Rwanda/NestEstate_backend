@@ -3,6 +3,8 @@ import PropertyService from "../services/PropertyService.js";
 import catchAsyncError from "../utils/catchAsyncError";
 import Response from "../utils/Response";
 import dotenv from "dotenv";
+import moment from "moment";
+import Property from "../models/propertyModel.js";
 
 dotenv.config();
 
@@ -17,7 +19,7 @@ class PropertyController {
       httpStatus.CREATED
     );
   });
-  
+
   static getAllAvailableProperties = catchAsyncError(async (req, res, next) => {
     const {
       perPage,
@@ -60,18 +62,51 @@ class PropertyController {
       totalProperties,
       data: properties,
     });
-  
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
-    const houses = await PropertyService.getUserProperties(req);
+    const { page, perPage, startDate, endDate } = req.query;
+    // Validate input dates using moment.js library
 
-    return Response.successMessage(
-      res,
-      "All available properties",
-      houses,
-      httpStatus.OK
-    );
+    try {
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
+
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+      }
+      const properties = await PropertyService.getUserProperties(
+        req,
+        perPage,
+        page,
+        startDateObj,
+        endDateObj
+      );
+
+      return Response.successMessage(
+        res,
+        "All properties",
+        properties,
+        httpStatus.OK
+      );
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
   static getSingleProperty = catchAsyncError(async (req, res) => {
@@ -124,7 +159,6 @@ class PropertyController {
     }
   });
 
-
   static hideProperty = catchAsyncError(async (req, res, next) => {
     const property = await PropertyService.hideProperty(req);
 
@@ -159,17 +193,59 @@ class PropertyController {
   });
 
   static getAllProperties = catchAsyncError(async (req, res, next) => {
-    const { page, perPage } = req.query;
-    const properties = await PropertyService.getAllProperties(perPage, page);
+    const { page, perPage, startDate, endDate } = req.query;
+    // Validate input dates using moment.js library
 
-    return Response.successMessage(
-      res,
-      "All properties",
-      properties,
-      httpStatus.OK
-    );
+    try {
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
+
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+      }
+      const properties = await PropertyService.getAllProperties(
+        perPage,
+        page,
+        startDateObj,
+        endDateObj
+      );
+
+      return Response.successMessage(
+        res,
+        "All properties",
+        properties,
+        httpStatus.OK
+      );
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
+  // get all count for property
+  static getAllCount = catchAsyncError(async (req, res, next) => {
+    const totalProperties = await PropertyService.countAllAvailableProperties();
+
+    return res.status(httpStatus.OK).json({
+      status: httpStatus.OK,
+      message: "Counts",
+      counts: totalProperties,
+    });
+  });
 }
 
 export default PropertyController;

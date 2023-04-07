@@ -4,8 +4,6 @@ import ValidateLoginInfo from "../middlewares/validateLoginInfo";
 import bcrypt from "bcryptjs";
 import httpStatus from "http-status";
 import Response from "../utils/Response";
-import checkEmailValidity from "../middlewares/checkEmailValidity";
-import checkUserData from "../middlewares/checkUserData";
 
 class UserService {
   /**
@@ -147,8 +145,19 @@ class UserService {
     }
   };
 
-  static getAllUsers = async (req, res, next) => {
-    const users = await User.find({}).select("-password");
+  static getAllUsers = async (perPage, page, startDate, endDate) => {
+    const options = {
+      skip: (page - 1) * perPage,
+      limit: perPage,
+      sort: { createdAt: -1 },
+    };
+
+    let filter = {};
+    if (startDate && endDate) {
+      filter.createdAt = { $gte: startDate, $lte: endDate };
+    }
+
+    const users = await User.find(filter, null, options);
     return users;
   };
 

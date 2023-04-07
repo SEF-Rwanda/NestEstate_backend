@@ -5,6 +5,7 @@ import cors from "cors";
 import dbConnection from "./config/config";
 import userRoutes from "./routes/userRouter";
 import propertyRoutes from "./routes/propertyRoute";
+import reportRoutes from "./routes/reportRoute";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "../swagger";
 
@@ -18,6 +19,7 @@ dbConnection();
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/properties", propertyRoutes);
+app.use("/api/v1/reports", reportRoutes)
 
 app.use("/", (req, res) => {
   res.json({
