@@ -1,6 +1,5 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { MongoMemoryServer } from "mongodb-memory-server";
 import app from "../index";
 import httpStatus from "http-status";
 import { users } from "./userCases";
@@ -15,16 +14,8 @@ dotenv.config({ path: "./.env" });
 const { expect } = chai;
 chai.use(chaiHttp);
 
-let mongoServer;
 let user_id;
 let token;
-
-before(async () => {
-  mongoServer = new MongoMemoryServer();
-  await mongoServer.start();
-  const mongoUri = mongoServer.getUri();
-  process.env.MONGODB_URI = mongoUri;
-}, 30000);
 
 describe("0. Welcome", () => {
   it("should return welcome ", async () => {
@@ -118,7 +109,6 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
         .post("/api/v1/users/signup")
         .set("Accept", "application/json")
         .send(users[4]);
-      console.log(res.body.data.otp);
       otp = res.body.data.otp;
       user_id = res.body.data._id;
 
@@ -373,11 +363,11 @@ describe("user unit test", () => {
     expect(actual).to.equal(false);
   });
   it("check if env is TEST", () => {
-    const actual = checkEnv("TEST","TEST");
+    const actual = checkEnv("TEST", "TEST");
     expect(actual).to.equal(true);
   });
   it("check if env is not TEST", () => {
-    const actual = checkEnv("DEV","TEST");
+    const actual = checkEnv("DEV", "TEST");
     expect(actual).to.equal(false);
   });
   it("check if env is not TEST", () => {
@@ -638,8 +628,4 @@ describe("forgot and reset", () => {
       console.error(error);
     }
   });
-});
-
-after(() => {
-  mongoServer.stop();
 });
