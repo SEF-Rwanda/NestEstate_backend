@@ -89,12 +89,29 @@ class PropertyService {
     return properties;
   };
 
-  static getUserProperties = async (req) => {
-    return await Property.find({
-      postedBy: req?.user?._id,
-      isHidden: false,
-      isApproved: true,
-    });
+  static getUserProperties = async (req, perPage, page, startDate, endDate) => {
+    const options = {
+      skip: (page - 1) * perPage,
+      limit: perPage,
+      sort: { createdAt: -1 },
+    };
+
+    let filter = {};
+    if (startDate && endDate) {
+      filter.createdAt = { $gte: startDate, $lte: endDate };
+    }
+
+    const properties = await Property.find(
+      {
+        postedBy: req?.user?._id,
+        isHidden: false,
+        isApproved: true,
+        ...filter,
+      },
+      null,
+      options
+    );
+    return properties;
   };
 
   // view single property

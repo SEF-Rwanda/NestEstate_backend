@@ -65,14 +65,48 @@ class PropertyController {
   });
 
   static getUserProperties = catchAsyncError(async (req, res, next) => {
-    const houses = await PropertyService.getUserProperties(req);
+    const { page, perPage, startDate, endDate } = req.query;
+    // Validate input dates using moment.js library
 
-    return Response.successMessage(
-      res,
-      "All available properties",
-      houses,
-      httpStatus.OK
-    );
+    try {
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
+
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+      }
+      const properties = await PropertyService.getUserProperties(
+        req,
+        perPage,
+        page,
+        startDateObj,
+        endDateObj
+      );
+
+      return Response.successMessage(
+        res,
+        "All properties",
+        properties,
+        httpStatus.OK
+      );
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
   static getSingleProperty = catchAsyncError(async (req, res) => {
