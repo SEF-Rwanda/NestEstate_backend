@@ -63,7 +63,9 @@ class UserController {
 
     // Send it to user's email
 
-    const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/reset-password/${resetToken}`;
 
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
     const response = await Email.resetPasswordEmail(req, user, message);
@@ -187,7 +189,7 @@ class UserController {
   });
 
   static getAllUsers = catchAsyncError(async (req, res, next) => {
-    const users = await UserService.getAllUsers(req, res,next);
+    const users = await UserService.getAllUsers(req, res, next);
 
     return Response.successMessage(
       res,

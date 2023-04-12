@@ -1,6 +1,6 @@
 import express from "express";
 import UserController from "../controllers/UserController";
-import NewUserDataChecker from "./../middlewares/NewUserDataChecker";
+import NewUserDataChecker from "../middlewares/NewUserDataChecker";
 import CheckPassword from "../middlewares/CheckPassword";
 import protectedRoute from "../middlewares/protectRoute";
 import isUserVerified from "../middlewares/isUserVerified";
