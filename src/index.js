@@ -7,12 +7,10 @@ import io from "socket.io";
 import { swaggerSpec } from "../swagger";
 import dbConnection from "./config/config";
 import userRoutes from "./routes/userRouter";
-import propertyRoutes from "./routes/propertyRoute";
+import propertyRoutes from "./routes/propertyRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import messageRoutes from "./routes/messageRoutes";
 import reportRoutes from "./routes/reportRoute";
-import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "../swagger";
 
 dotenv.config({ path: "./.env" });
 
@@ -26,7 +24,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/properties", propertyRoutes);
 app.use("/api/v1/chats", chatRoutes);
 app.use("/api/v1/messages", messageRoutes);
-app.use("/api/v1/reports", reportRoutes)
+app.use("/api/v1/reports", reportRoutes);
 
 app.use("/", (req, res) => {
   res.json({
