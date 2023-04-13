@@ -4,8 +4,6 @@ import ValidateLoginInfo from "../middlewares/validateLoginInfo";
 import bcrypt from "bcryptjs";
 import httpStatus from "http-status";
 import Response from "../utils/Response";
-import checkEmailValidity from "../middlewares/checkEmailValidity";
-import checkUserData from "../middlewares/checkUserData";
 
 class UserService {
   /**
