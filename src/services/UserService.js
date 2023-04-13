@@ -110,6 +110,7 @@ class UserService {
     const token = TokenAuthenticator.signToken(data);
     return res.header("auth-token", token).send({
       token,
+      data
     });
   };
 

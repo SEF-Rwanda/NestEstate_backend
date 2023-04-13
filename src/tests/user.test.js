@@ -391,7 +391,7 @@ describe("create property", () => {
           password: "12345678",
         });
       token2 = res.body.token;
-      user_id2=res.body.user._id;
+      user_id2=res.body.data._id;
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body).haveOwnProperty("token");
@@ -433,6 +433,7 @@ describe("create property", () => {
       console.error(error);
     }
   });
+
   it("test create property without size", async () => {
     try {
       const res = await chai
@@ -507,7 +508,7 @@ describe("get all properties", () => {
   });
 });
 
-describe(" update property,/api/v1/properties/:id", () => {
+describe(" update property, /api/v1/properties/:id", () => {
   it("Property updated successfully", async () => {
     try {
       const res = await chai
@@ -516,28 +517,25 @@ describe(" update property,/api/v1/properties/:id", () => {
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`)
         .send({
-          "mainImage": "/home/john/Pictures/house3.jpg",
           "title": "House for rent",
           "category": "Land",
-          "section": "renting",
+          "section": "rent",
           "price": 900,
           "size": 200,
           "upi": "12/03/45/678",
           "description": "a nice house",
-          "otherImages": [ ],
+          "mainImage": "/home/john/Pictures/house3.jpg",
+          "otherImages": [],
           "bedrooms": 1,
           "bathrooms": 1,
+          "masterPlanUse": "Residential",
           "masterPlanLevel": "R1",
-          "parking": false,
+          "streetAddress": "KG 643 St",
+          "geoLocation": "0.345678, 32.345678",
           "tank": false,
           "furnished": false,
           "internet": false,
-          "isAvailable": true,
-          "isApproved": false,
-          "postedBy": "6436d9978ef2123823fc9496",
-          "isHidden": false,
-          "createdAt": "2023-04-12T16:17:30.546Z",
-          "updatedAt": "2023-04-12T16:17:30.546Z",
+          "parking": false,
         });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
@@ -934,6 +932,22 @@ describe("Send a message", () => {
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
       expect(res.body.status).to.equal(httpStatus.CREATED);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get all reports", () => {
+  it("get all chats", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/reports")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
     } catch (error) {
       console.error(error);
     }
