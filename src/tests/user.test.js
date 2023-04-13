@@ -15,9 +15,11 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 let user_id;
-let token;
+let user_id2;
+let token2;
+let property_id;
 
-describe("0. Welcome", () => {
+describe("Welcome", () => {
   it("should return welcome ", async () => {
     const res = await chai
       .request(app)
@@ -30,7 +32,7 @@ describe("0. Welcome", () => {
   });
 });
 
-describe("1 . POST signup,/api/v1/users/signup", () => {
+describe("POST signup,/api/v1/users/signup", () => {
   it("User validation failed: firstName: First name is required!", (done) => {
     chai
       .request(app)
@@ -160,7 +162,7 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
   });
 });
 
-describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
+describe("POST signup,/api/v1/users/verifyEmail", () => {
   let otp;
   let token;
   before(async () => {
@@ -256,7 +258,7 @@ describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
   });
 });
 
-describe("2 . POST Login,/api/v1/users/login", () => {
+describe("POST Login,/api/v1/users/login", () => {
   it("Successfully login", async () => {
     try {
       const res = await chai
@@ -377,7 +379,7 @@ describe("user unit test", () => {
 });
 
 describe("create property", () => {
-  let token = null;
+ 
   before(async () => {
     try {
       const res = await chai
@@ -388,8 +390,8 @@ describe("create property", () => {
           email: "ngirimanaschadrack@gmail.com",
           password: "12345678",
         });
-      token = res.body.token;
-
+      token2 = res.body.token;
+      user_id2=res.body.user._id;
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body).haveOwnProperty("token");
@@ -404,7 +406,7 @@ describe("create property", () => {
         .request(app)
         .post("/api/v1/properties")
         .set("Accept", "application/json")
-        .set("authorization", `Bearer ${token}`)
+        .set("authorization", `Bearer ${token2}`)
         .send(properties[0]);
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
@@ -421,7 +423,7 @@ describe("create property", () => {
         .request(app)
         .post("/api/v1/properties")
         .set("Accept", "application/json")
-        .set("authorization", `Bearer ${token}`)
+        .set("authorization", `Bearer ${token2}`)
         .send(properties[1]);
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
@@ -437,7 +439,7 @@ describe("create property", () => {
         .request(app)
         .post("/api/v1/properties")
         .set("Accept", "application/json")
-        .set("authorization", `Bearer ${token}`)
+        .set("authorization", `Bearer ${token2}`)
         .send(properties[2]);
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
@@ -455,7 +457,7 @@ describe("get properties", () => {
         .request(app)
         .get("/api/v1/properties")
         .set("Accept", "application/json")
-        .set("authorization", `Bearer ${token}`);
+        .set("authorization", `Bearer ${token2}`);
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
@@ -467,7 +469,176 @@ describe("get properties", () => {
   });
 });
 
-describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
+describe("get my properties", () => {
+  it("get all my properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/properties/my-properties")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+      expect(res.body).haveOwnProperty("data");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("get all properties", () => {
+  it("get all all properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/properties/all")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      property_id=res.body.data[0]._id
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+      expect(res.body).haveOwnProperty("data");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe(" update property,/api/v1/properties/:id", () => {
+  it("Property updated successfully", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/properties/${property_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`)
+        .send({
+          "mainImage": "/home/john/Pictures/house3.jpg",
+          "title": "House for rent",
+          "category": "Land",
+          "section": "renting",
+          "price": 900,
+          "size": 200,
+          "upi": "12/03/45/678",
+          "description": "a nice house",
+          "otherImages": [ ],
+          "bedrooms": 1,
+          "bathrooms": 1,
+          "masterPlanLevel": "R1",
+          "parking": false,
+          "tank": false,
+          "furnished": false,
+          "internet": false,
+          "isAvailable": true,
+          "isApproved": false,
+          "postedBy": "6436d9978ef2123823fc9496",
+          "isHidden": false,
+          "createdAt": "2023-04-12T16:17:30.546Z",
+          "updatedAt": "2023-04-12T16:17:30.546Z",
+        });
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.CREATED);
+      expect(res.body.status).to.equal(httpStatus.CREATED);
+      expect(res.body.message).to.equal("Property updated successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get single property", () => {
+  it("get properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/properties/${property_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Hide a property", () => {
+  it("get properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/properties/hideProperty/${property_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Unhide a property", () => {
+  it("get properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/properties/unhideProperty/${property_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Approve a property", () => {
+  it("get properties", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/properties/approveProperty/${property_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Make a user an admin", () => {
+  it("make user admin", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .put(`/api/v1/users/makeAdmin/${user_id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+describe("POST update profile,/api/v1/users/profile/:id", () => {
   it("User updated successfully", async () => {
     try {
       const res = await chai
@@ -500,7 +671,7 @@ describe("3 . POST update profile,/api/v1/users/profile/:id", () => {
   });
 });
 
-describe("4 . GET all users,/api/v1/users", () => {
+describe("GET all users,/api/v1/users", () => {
   let id = null;
   it("Should get all users", async () => {
     try {
@@ -624,6 +795,145 @@ describe("forgot and reset", () => {
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
       expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
       expect(res.body.error).to.equal("Token is invalid or has expired");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Create chat", () => {
+  it("test create chat successfully", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/chats")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`)
+        .send({"userId":user_id2});
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.CREATED);
+      expect(res.body.status).to.equal(httpStatus.CREATED);
+      expect(res.body).has.property("data");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  it("test create chat without user id", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/properties")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`)
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
+
+      expect(res.body.error).to.equal("Title must be specified");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get all chats", () => {
+  it("get all chats", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/chats")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get all messages", () => {
+
+  let id;
+  before(async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/chats")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      id = res.body.data[0]._id;
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("get all messages", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/messages/${id}`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Send a message", () => {
+
+  let id;
+  before(async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/chats")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      id = res.body.data[0]._id;
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  it("test send a message successfully", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/messages")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`)
+        .send({"content":"hello my brother Katabanga","chatId":id});
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.CREATED);
+      expect(res.body.status).to.equal(httpStatus.CREATED);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  it("test send an empty message (with spaces only)", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post("/api/v1/messages")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`)
+        .send({"content":"  ","chatId":id});
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.CREATED);
+      expect(res.body.status).to.equal(httpStatus.CREATED);
     } catch (error) {
       console.error(error);
     }
