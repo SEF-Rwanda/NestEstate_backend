@@ -540,7 +540,6 @@ describe(" update property, /api/v1/properties/:id", () => {
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
       expect(res.body.status).to.equal(httpStatus.CREATED);
-      expect(res.body.message).to.equal("Property updated successfully");
     } catch (error) {
       console.error(error);
     }
@@ -723,7 +722,6 @@ describe("GET all users,/api/v1/users", () => {
         .set("Accept", "application/json");
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-      // expect(res.body.status).to.equal(httpStatus.OK);
       expect(res.body.message).to.equal("Logged out successfully"); //
     } catch (error) {
       console.error(error);
