@@ -213,11 +213,6 @@ class PropertyService {
 
     await property.save();
   };
-
-  // Count the name of users
-  static countProperties = async () => {
-    return await Property.countDocuments();
-  };
 }
 
 export default PropertyService;
