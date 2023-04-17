@@ -1,17 +1,17 @@
-import express from "express";
-import PropertyController from "../controllers/PropertyController";
-import protectedRoute from "../middlewares/protectRoute";
-import isUserVerified from "../middlewares/isUserVerified";
-import checkProperty from "../middlewares/checkPropertyData";
+import express from 'express';
+import PropertyController from '../controllers/PropertyController';
+import protectedRoute from '../middlewares/protectRoute';
+import isUserVerified from '../middlewares/isUserVerified';
+import checkProperty from '../middlewares/checkPropertyData';
 
 const router = express.Router();
 
 router.post(
-  "/",
+  '/',
   protectedRoute,
   isUserVerified,
   checkProperty,
-  PropertyController.addProperty
+  PropertyController.addProperty,
 );
 
 /**
@@ -30,46 +30,46 @@ router.post(
  *                 type: object
  *
  */
-router.get("/", PropertyController.getAllAvailableProperties);
-router.get("/all", PropertyController.getAllProperties);
+router.get('/', PropertyController.getAllAvailableProperties);
+router.get('/all', PropertyController.getAllProperties);
 router.get(
-  "/my-properties",
+  '/my-properties',
   protectedRoute,
   isUserVerified,
-  PropertyController.getUserProperties
+  PropertyController.getUserProperties,
 );
-router.get("/:id", PropertyController.getSingleProperty);
+router.get('/:id', PropertyController.getSingleProperty);
 
 router.put(
-  "/:id",
+  '/:id',
   protectedRoute,
   isUserVerified,
-  PropertyController.updateProperty
+  PropertyController.updateProperty,
 );
 
 // hide property
 router.put(
-  "/hideProperty/:id",
+  '/hideProperty/:id',
   protectedRoute,
   isUserVerified,
-  PropertyController.hideProperty
+  PropertyController.hideProperty,
 );
 
-//unhide property
+// unhide property
 router.put(
-  "/unhideProperty/:id",
+  '/unhideProperty/:id',
   protectedRoute,
   isUserVerified,
-  PropertyController.unhideProperty
+  PropertyController.unhideProperty,
 );
 
 // approve property
 router.put(
-  "/approveProperty/:id",
+  '/approveProperty/:id',
   protectedRoute,
   isUserVerified,
-  PropertyController.approveProperty
+  PropertyController.approveProperty,
 );
 
-router.get("/ ", PropertyController.getAllCount);
+router.get('/ ', PropertyController.getAllCount);
 export default router;

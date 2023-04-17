@@ -1,34 +1,34 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const propertySchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Title is required!"],
+      required: [true, 'Title is required!'],
     },
     category: {
       type: String,
-      required: [true, "Category is required!"],
+      required: [true, 'Category is required!'],
     },
     section: {
       type: String,
     },
     price: {
       type: Number,
-      required: [true, "Price is required!"],
+      required: [true, 'Price is required!'],
     },
 
     size: {
       type: Number,
-      required: [true, "Size is required!"],
+      required: [true, 'Size is required!'],
     },
     upi: {
       type: String,
-      required: [true, "UPI is required!"],
+      required: [true, 'UPI is required!'],
     },
     description: {
       type: String,
-      required: [true, "Description is required!"],
+      required: [true, 'Description is required!'],
     },
     mainImage: {
       public_id: {
@@ -57,7 +57,7 @@ const propertySchema = new mongoose.Schema(
     },
     masterPlanLevel: {
       type: String,
-      default: "R1",
+      default: 'R1',
     },
     streetAddress: {
       type: String,
@@ -92,17 +92,12 @@ const propertySchema = new mongoose.Schema(
     },
     postedBy: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
 
     createdAt: {
       type: Date,
       default: Date.now,
-    },
-
-    isApproved: {
-      type: Boolean,
-      default: false,
     },
 
     isHidden: {
@@ -114,9 +109,9 @@ const propertySchema = new mongoose.Schema(
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     timestamps: true,
-  }
+  },
 );
 
-const Property = mongoose.model("Property", propertySchema);
+const Property = mongoose.model('Property', propertySchema);
 
 export default Property;

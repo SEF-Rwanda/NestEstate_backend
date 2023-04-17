@@ -1,6 +1,11 @@
-import Property from "../models/propertyModel";
-import cloudinary from "../utils/cloudinary";
-import moment from "moment";
+/* eslint-disable consistent-return */
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-return-await */
+import moment from 'moment';
+import Property from '../models/propertyModel';
+import cloudinary from '../utils/cloudinary';
 
 class PropertyService {
   static addProperty = async (req) => {
@@ -16,7 +21,7 @@ class PropertyService {
       sort: { createdAt: -1 },
     };
 
-    let filter = {};
+    const filter = {};
     if (startDate && endDate) {
       filter.createdAt = { $gte: startDate, $lte: endDate };
     }
@@ -38,7 +43,7 @@ class PropertyService {
     bathrooms,
     parking,
     furnished,
-    internet
+    internet,
   ) => {
     const options = {
       skip: (page - 1) * perPage,
@@ -59,7 +64,7 @@ class PropertyService {
       filter.section = section;
     }
     if (title) {
-      filter.title = { $regex: title, $options: "i" };
+      filter.title = { $regex: title, $options: 'i' };
     }
     if (bedrooms) {
       filter.bedrooms = bedrooms;
@@ -77,25 +82,25 @@ class PropertyService {
       filter.internet = internet;
     }
     if (description) {
-      filter.description = { $regex: description, $options: "i" };
+      filter.description = { $regex: description, $options: 'i' };
     }
 
     const properties = await Property.find(
-      { isAvailable: true, isApproved: true, isHidden: false, ...filter },
+      {
+        isAvailable: true, isApproved: true, isHidden: false, ...filter,
+      },
       null,
-      options
+      options,
     );
 
     return properties;
   };
 
-  static getUserProperties = async (req) => {
-    return await Property.find({
-      postedBy: req?.user?._id,
-      isHidden: false,
-      isApproved: true,
-    });
-  };
+  static getUserProperties = async (req) => await Property.find({
+    postedBy: req?.user?._id,
+    isHidden: false,
+    isApproved: true,
+  });
 
   // view single property
   static getSingleProperty = async (req, res, next) => {
@@ -108,13 +113,11 @@ class PropertyService {
   };
 
   // count all available properties
-  static countAllAvailableProperties = async () => {
-    return await Property.countDocuments({
-      isAvailable: true,
-      isApproved: true,
-      isHidden: false,
-    });
-  };
+  static countAllAvailableProperties = async () => await Property.countDocuments({
+    isAvailable: true,
+    isApproved: true,
+    isHidden: false,
+  });
 
   // update profile
   static updateProperty = async (req, res, next) => {
@@ -134,8 +137,7 @@ class PropertyService {
       property.bedrooms = req.body.bedrooms || property.bedrooms;
       property.bathrooms = req.body.bathrooms || property.bathrooms;
       property.masterPlanUse = req.body.masterPlanUse || property.masterPlanUse;
-      property.masterPlanLevel =
-        req.body.masterPlanLevel || property.masterPlanLevel;
+      property.masterPlanLevel = req.body.masterPlanLevel || property.masterPlanLevel;
       property.streetAddress = req.body.streetAddress || property.streetAddress;
       property.geoLocation = req.body.geoLocation || property.geoLocation;
       property.parking = req.body.parking || property.parking;
@@ -143,7 +145,7 @@ class PropertyService {
       property.furnished = req.body.furnished || property.furnished;
       property.internet = req.body.internet || property.internet;
 
-      if (req.body.category === "Land") {
+      if (req.body.category === 'Land') {
         property.bedrooms = 0;
         property.bathrooms = 0;
         property.furnished = false;
@@ -153,7 +155,7 @@ class PropertyService {
       }
 
       // check if user uploaded main Image
-      if (req.body.mainImage !== "") {
+      if (req.body.mainImage !== '') {
         const ImgId = property.mainImage.public_id;
 
         // delete old image
@@ -162,9 +164,9 @@ class PropertyService {
         }
 
         const newImage = await cloudinary.uploader.upload(req.body.mainImage, {
-          folder: "properties",
+          folder: 'properties',
           width: 1000,
-          crop: "scale",
+          crop: 'scale',
         });
 
         property.mainImage = {
@@ -213,6 +215,9 @@ class PropertyService {
 
     await property.save();
   };
+
+  // Count the name of users
+  static countProperties = async () => await Property.countDocuments();
 }
 
 export default PropertyService;

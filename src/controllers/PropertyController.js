@@ -1,10 +1,12 @@
-import httpStatus from "http-status";
-import PropertyService from "../services/PropertyService.js";
-import catchAsyncError from "../utils/catchAsyncError";
-import Response from "../utils/Response";
-import dotenv from "dotenv";
-import moment from "moment";
-import Property from "../models/propertyModel.js";
+/* eslint-disable no-restricted-globals */
+/* eslint-disable consistent-return */
+/* eslint-disable no-unused-vars */
+import httpStatus from 'http-status';
+import dotenv from 'dotenv';
+import moment from 'moment';
+import PropertyService from '../services/PropertyService';
+import catchAsyncError from '../utils/catchAsyncError';
+import Response from '../utils/Response';
 
 dotenv.config();
 
@@ -14,9 +16,9 @@ class PropertyController {
 
     return Response.successMessage(
       res,
-      "Property created successfully!",
+      'Property created successfully!',
       houses,
-      httpStatus.CREATED
+      httpStatus.CREATED,
     );
   });
 
@@ -40,8 +42,8 @@ class PropertyController {
     const properties = await PropertyService.getAllAvailableProperties(
       perPage,
       page,
-      parseInt(priceMin),
-      parseInt(priceMax),
+      parseInt(priceMin, 10),
+      parseInt(priceMax, 10),
       title,
       description,
       section,
@@ -51,14 +53,14 @@ class PropertyController {
       bathrooms,
       parking,
       furnished,
-      internet
+      internet,
     );
 
     const totalProperties = await PropertyService.countAllAvailableProperties();
 
     return res.status(httpStatus.OK).json({
       status: httpStatus.OK,
-      message: "All available properties",
+      message: 'All available properties',
       totalProperties,
       data: properties,
     });
@@ -69,9 +71,9 @@ class PropertyController {
 
     return Response.successMessage(
       res,
-      "All available properties",
+      'All available properties',
       houses,
-      httpStatus.OK
+      httpStatus.OK,
     );
   });
 
@@ -81,21 +83,21 @@ class PropertyController {
       if (property) {
         return Response.successMessage(
           res,
-          "Property retrieved successfully",
+          'Property retrieved successfully',
           property,
-          httpStatus.OK
+          httpStatus.OK,
         );
       }
       return Response.errorMessage(
         res,
-        "Something went wrong,please try again",
-        httpStatus.BAD_REQUEST
+        'Something went wrong,please try again',
+        httpStatus.BAD_REQUEST,
       );
     } catch (error) {
       return Response.errorMessage(
         res,
         error.message,
-        httpStatus.INTERNAL_SERVER_ERROR
+        httpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   });
@@ -106,21 +108,21 @@ class PropertyController {
       if (property) {
         return Response.successMessage(
           res,
-          "Property updated successfully",
+          'Property updated successfully',
           property,
-          httpStatus.CREATED
+          httpStatus.OK,
         );
       }
       return Response.errorMessage(
         res,
-        "Something went wrong,please try again",
-        httpStatus.BAD_REQUEST
+        'Something went wrong,please try again',
+        httpStatus.BAD_REQUEST,
       );
     } catch (error) {
       return Response.errorMessage(
         res,
         error.message,
-        httpStatus.INTERNAL_SERVER_ERROR
+        httpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   });
@@ -130,9 +132,9 @@ class PropertyController {
 
     return Response.successMessage(
       res,
-      "Property hidden successfully",
+      'Property hidden successfully',
       property,
-      httpStatus.OK
+      httpStatus.OK,
     );
   });
 
@@ -141,9 +143,9 @@ class PropertyController {
 
     return Response.successMessage(
       res,
-      "Property unhidden successfully",
+      'Property unhidden successfully',
       property,
-      httpStatus.OK
+      httpStatus.OK,
     );
   });
 
@@ -152,14 +154,16 @@ class PropertyController {
 
     return Response.successMessage(
       res,
-      "Property approved successfully",
+      'Property approved successfully',
       property,
-      httpStatus.OK
+      httpStatus.OK,
     );
   });
 
   static getAllProperties = catchAsyncError(async (req, res, next) => {
-    const { page, perPage, startDate, endDate } = req.query;
+    const {
+      page, perPage, startDate, endDate,
+    } = req.query;
     // Validate input dates using moment.js library
 
     try {
@@ -171,34 +175,34 @@ class PropertyController {
         const isValidStartDate = moment(
           startDate,
           moment.ISO_8601,
-          true
+          true,
         ).isValid();
         const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
 
         if (!isValidStartDate || !isValidEndDate) {
-          return res.status(400).json({ message: "Invalid date format" });
+          return res.status(400).json({ message: 'Invalid date format' });
         }
         // Check if startDateObj and endDateObj are valid Date objects
         if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-          return res.status(400).json({ message: "Invalid date format" });
+          return res.status(400).json({ message: 'Invalid date format' });
         }
       }
       const properties = await PropertyService.getAllProperties(
         perPage,
         page,
         startDateObj,
-        endDateObj
+        endDateObj,
       );
 
       return Response.successMessage(
         res,
-        "All properties",
+        'All properties',
         properties,
-        httpStatus.OK
+        httpStatus.OK,
       );
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: 'Server error' });
     }
   });
 
@@ -208,7 +212,7 @@ class PropertyController {
 
     return res.status(httpStatus.OK).json({
       status: httpStatus.OK,
-      message: "Counts",
+      message: 'Counts',
       counts: totalProperties,
     });
   });
