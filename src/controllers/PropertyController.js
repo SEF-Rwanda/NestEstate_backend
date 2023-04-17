@@ -108,7 +108,7 @@ class PropertyController {
           res,
           "Property updated successfully",
           property,
-          httpStatus.CREATED
+          httpStatus.OK
         );
       }
       return Response.errorMessage(
