@@ -1,5 +1,7 @@
 import User from "../models/UserModel";
 import Property from "../models/propertyModel";
+import Log from "../models/LogModel";
+import jwt_decode from "jwt-decode";
 
 class ReportService {
   /**
@@ -93,6 +95,13 @@ class ReportService {
       totalAvailablePlots,
       totalUnavailablePlots,
     };
+    
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Viewed analytics" });
+    await log.save();
+
     return data;
   };
 }

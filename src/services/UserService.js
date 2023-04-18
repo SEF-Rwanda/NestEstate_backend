@@ -4,6 +4,8 @@ import ValidateLoginInfo from "../middlewares/validateLoginInfo";
 import bcrypt from "bcryptjs";
 import httpStatus from "http-status";
 import Response from "../utils/Response";
+import Log from "../models/LogModel";
+import jwt_decode from "jwt-decode";
 
 class UserService {
   /**
@@ -71,6 +73,8 @@ class UserService {
     };
 
     const token = TokenAuthenticator.signToken(data);
+    const log = new Log({ user: newUser.firstName+" "+newUser.lastName, action: "Registered" });
+    await log.save();
     return Response.successMessage(
       res,
       "Email verified successfully!",
@@ -108,13 +112,22 @@ class UserService {
     };
 
     const token = TokenAuthenticator.signToken(data);
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Logged in" });
+    await log.save();
+
     return res.header("auth-token", token).send({
       token,
       data
     });
   };
 
-  static logoutService = (req, res) => {
+  static logoutService = async(req, res) => {
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Logged out" });
+    await log.save();
+
     res.cookie("jwt", "loggedout", {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
@@ -125,6 +138,8 @@ class UserService {
   static getUserProfile = async (req, res, next) => {
     try {
       const user = await User.findById(req.params.id).orFail();
+      const log = new Log({ user: user.firstName+" "+user.lastName, action: "Checked profile" });
+      await log.save();
       return user;
     } catch (error) {
       console.log(error.message);
@@ -140,6 +155,8 @@ class UserService {
       user.email = req.body.email || user.email;
       user.photo = req.body.photo || user.photo;
       await user.save({ validateBeforeSave: false });
+      const log = new Log({ user: user.firstName+" "+user.lastName, action: "Updated profile" });
+      await log.save();
       return user;
     } catch (error) {
       console.log(error.message);
@@ -147,23 +164,48 @@ class UserService {
   };
 
   static getAllUsers = async (req, res, next) => {
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Viewed all Users" });
+    await log.save();
+
     const users = await User.find({}).select("-password");
     return users;
   };
 
   // Approve a property by only admin
-  static makeUserAdmin = async (req) => {
+  static makeUserAdmin = async (req, res) => {
+    const token=req.headers.authorization.split(" ")[1];
+    const theuser = jwt_decode(token);
+
+    
+
     const user_id = req.params.id;
     const user = await User.findById(user_id).orFail();
 
-    // if a property is approved, change it to unapproved, and vice versa
     if (user.isAdmin === true) {
       user.isAdmin = false;
+      const log = new Log({ user: theuser.firstName+" "+theuser.lastName, action: "Made"+user.firstName+" "+user.lastName+" an normal user "});
+      await log.save();
     } else {
       user.isAdmin = true;
+      const log = new Log({ user: theuser.firstName+" "+theuser.lastName, action: "Made"+user.firstName+" "+user.lastName+" an Admin "});
+      await log.save();
     }
-
     await user.save({ validateBeforeSave: false });
+    
+  };
+
+  static getLogs = async (req, res, next) => {
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Viewed system logs" });
+    await log.save();
+
+    const logs = await Log.find({});
+    return logs;
   };
 }
 

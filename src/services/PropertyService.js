@@ -1,10 +1,19 @@
 import Property from "../models/propertyModel";
 import cloudinary from "../utils/cloudinary";
+import Log from "../models/LogModel";
+import jwt_decode from "jwt-decode";
 import moment from "moment";
 
 class PropertyService {
   static addProperty = async (req) => {
     req.body.postedBy = req?.user?._id;
+
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Created a property - "+req.body.title });
+    await log.save();
+
     return await Property.create(req.body);
   };
 
@@ -90,6 +99,12 @@ class PropertyService {
   };
 
   static getUserProperties = async (req) => {
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Viewed his properties" });
+    await log.save();
+    
     return await Property.find({
       postedBy: req?.user?._id,
       isHidden: false,
@@ -173,6 +188,12 @@ class PropertyService {
         };
       }
       await property.save({ validateBeforeSave: false });
+    
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Updated property - "+property.title });
+    await log.save();
       return property;
     } catch (error) {
       console.log(error.message);
@@ -187,6 +208,12 @@ class PropertyService {
     property.isHidden = true;
 
     await property.save();
+
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Hide property - "+property.title });
+    await log.save();
   };
 
   // admin to unhide a property
@@ -197,6 +224,12 @@ class PropertyService {
     property.isHidden = false;
 
     await property.save();
+
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
+
+    const log = new Log({ user: user.firstName+" "+user.lastName, action: "Unhide property - "+property.title });
+    await log.save();
   };
 
   // Approve a property by only admin
@@ -204,14 +237,24 @@ class PropertyService {
     const property_id = req.params.id;
     const property = await Property.findById(property_id).orFail();
 
+    const token=req.headers.authorization.split(" ")[1];
+    const user = jwt_decode(token);
     // if a property is approved, change it to unapproved, and vice versa
     if (property.isApproved) {
       property.isApproved = false;
+      const log = new Log({ user: user.firstName+" "+user.lastName, action: "Unapprove property - "+property.title });
+      await log.save();
     } else {
       property.isApproved = true;
+      const log = new Log({ user: user.firstName+" "+user.lastName, action: "Approve property - "+property.title });
+      await log.save();
     }
 
     await property.save();
+
+    
+
+    
   };
 }
 

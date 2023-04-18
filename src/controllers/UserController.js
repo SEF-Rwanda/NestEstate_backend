@@ -208,6 +208,17 @@ class UserController {
       httpStatus.OK
     );
   });
+
+  static getLogs = catchAsyncError(async (req, res, next) => {
+    const logs = await UserService.getLogs(req, res, next);
+
+    return Response.successMessage(
+      res,
+      "All logs",
+      logs,
+      httpStatus.OK
+    );
+  });
 }
 
 export default UserController;

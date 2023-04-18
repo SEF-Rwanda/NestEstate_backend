@@ -4,6 +4,7 @@ import NewUserDataChecker from "./../middlewares/NewUserDataChecker";
 import CheckPassword from "../middlewares/CheckPassword";
 import protectedRoute from "../middlewares/protectRoute";
 import isUserVerified from "../middlewares/isUserVerified";
+import userDashboard from "../controllers/userDashboardController";
 const router = express.Router();
 
 /**
@@ -87,7 +88,10 @@ router.patch("/resetPassword/:token", UserController.resetPassword);
  */
 router.post("/login", UserController.login);
 
-router.post("/logout", UserController.logout);
+router.post(
+  "/logout", 
+  protectedRoute,
+  UserController.logout);
 
 router.post("/verifyEmail", protectedRoute, UserController.verifyEmail);
 
@@ -122,5 +126,16 @@ router.get("/profile/:id", UserController.getUserProfile);
  */
 
 router.get("/", UserController.getAllUsers);
+
+router.get(
+  "/reports",
+  protectedRoute,
+  // isUserVerified,
+   userDashboard.userRecords);
+router.get(
+  "/logs",
+  protectedRoute,
+  UserController.getLogs
+);
 
 export default router;
