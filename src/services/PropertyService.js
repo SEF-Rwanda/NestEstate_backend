@@ -101,7 +101,20 @@ class PropertyService {
   static getSingleProperty = async (req, res, next) => {
     try {
       const property = await Property.findById(req.params.id).orFail();
-      return property;
+      const relatedProperties = await Property.find({
+        category: property.category,
+        section: property.section,
+        isAvailable: property.isAvailable,
+        isApproved: property.isApproved,
+        isHidden: property.isHidden,
+        price: { $gte: property.price - 50000, $lte: property.price + 50000 },
+        _id: { $ne: property._id },
+      }).limit(4);
+
+      return {
+        property,
+        relatedProperties,
+      };
     } catch (error) {
       console.log(error.message);
     }
