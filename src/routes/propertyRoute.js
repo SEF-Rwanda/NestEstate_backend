@@ -14,8 +14,6 @@ router.post(
   PropertyController.addProperty
 );
 
-router.post("/checkout", PropertyController.payProperty);
-
 /**
  * @swagger
  * /api/v1/properties:

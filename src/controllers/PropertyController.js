@@ -8,8 +8,7 @@ import moment from "moment";
 dotenv.config();
 //
 const stripe = require("stripe")(
-  "sk_test_51MxqNaGBiMBqhHS1WOMOSzlXyXDAU21axAlzRepVGiugYPpYCVtsuJ1VRJTSnDdfASUpO0Bt2KJTSO0jFOumgGPO00TeN9gc1m"
-);
+  );
 
 class PropertyController {
   static addProperty = catchAsyncError(async (req, res, next) => {
@@ -248,37 +247,6 @@ class PropertyController {
       message: "Counts",
       counts: totalProperties,
     });
-  });
-
-  static payProperty = catchAsyncError(async (req, res) => {
-    console.log("====================================");
-    console.log(req.body);
-    console.log("====================================");
-
-    // const {amount, payment_method, receipt_email} = req.body;
-
-    // try {
-
-    //   const paymentIntent = await stripe.paymentIntents.create({
-    //     amount: 1000,
-    //     currency: "USD",
-    //     description: "NestEstate",
-    //     payment_method,
-    //     confirm: true,
-    //     receipt_email
-    //   });
-
-    //   res.json({
-    //     message: "Payment successful",
-    //     success: true,
-    //   });
-    // } catch (error) {
-    //   console.log("Error", error);
-    //   res.json({
-    //     message: "Payment failed",
-    //     success: false,
-    //   });
-    // }
   });
 }
 
