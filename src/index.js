@@ -11,6 +11,7 @@ import propertyRoutes from "./routes/propertyRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import messageRoutes from "./routes/messageRoutes";
 import reportRoutes from "./routes/reportRoute";
+import preferenceRoutes from "./routes/preferenceRoutes";
 
 dotenv.config({ path: "./.env" });
 
@@ -25,6 +26,7 @@ app.use("/api/v1/properties", propertyRoutes);
 app.use("/api/v1/chats", chatRoutes);
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/reports", reportRoutes);
+app.use("/api/v1/preferences", preferenceRoutes);
 
 app.use("/", (req, res) => {
   res.json({
