@@ -10,8 +10,14 @@ const preferenceSchema = new mongoose.Schema(
       type: String,
     },
     price: {
-      type: Number,
-      required: [true, "Price is required!"],
+      min: {
+        type: Number,
+        default: 0,
+      },
+      max: {
+        type: Number,
+        default: 0,
+      },
     },
 
     size: {
