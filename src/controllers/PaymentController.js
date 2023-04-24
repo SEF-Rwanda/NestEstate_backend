@@ -1,7 +1,10 @@
 import catchAsyncError from "../utils/catchAsyncError";
 import dotenv from "dotenv";
 import PaymentModel from "../models/paymentModel";
+import PaymentService from "../services/PaymentService";
+import Response from "../utils/Response";
 const Stripe = require("stripe");
+import httpStatus from "http-status";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -9,6 +12,11 @@ dotenv.config();
 
 class PaymentController {
   static makePayment = catchAsyncError(async (req, res) => {
+
+    console.log("First User Id")
+    console.log(req.body.userId)
+    console.log("===============================")
+
     const property = req.body.property.property;
     const orderData = {
       id: property._id,
@@ -56,10 +64,13 @@ class PaymentController {
     // Get the property data to be saved in the database
     const property = JSON.parse(customer.metadata.property);
     const userId = customer.metadata.userId;
+
     const customerId = data.customer;
     const pametnIntentId = data.payment_intent;
     const newPayment = new PaymentModel({
       userId,
+      email: data.customer_details.email,
+      name: data.customer_details.name,
       customerId,
       pametnIntentId,
       property,
@@ -104,7 +115,6 @@ class PaymentController {
       data = req.body.data.object;
       eventType = req.body.type;
     }
-
     if (eventType === "checkout.session.completed") {
       stripe.customers
         .retrieve(data.customer)
@@ -114,6 +124,26 @@ class PaymentController {
         .catch((err) => console.log(err.message));
     }
     res.status(200).end();
+  });
+
+  // View my payments
+  static viewMyPayments = catchAsyncError(async (req, res) => {
+    const payments = await PaymentService.viewMyPayments(req);
+    return Response.successMessage(
+      res,
+      "All Payments",
+      payments,
+      httpStatus.OK
+    );
+  });
+
+  // View all payments
+  static viewAllPayments = catchAsyncError(async (req, res) => {
+    const payments = await PaymentService.viewAllPayments();
+    res.status(200).json({
+      status: "success",
+      data: payments,
+    });
   });
 }
 

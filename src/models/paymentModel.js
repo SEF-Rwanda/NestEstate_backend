@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 const paymentModelSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
+    email: { type: String, nullable: true },
+    name: { type: String, nullable: true },
     customerId: { type: String },
     paymentIntentId: { type: String },
     property: {
