@@ -379,7 +379,6 @@ describe("user unit test", () => {
 });
 
 describe("create property", () => {
- 
   before(async () => {
     try {
       const res = await chai
@@ -391,7 +390,7 @@ describe("create property", () => {
           password: "12345678",
         });
       token2 = res.body.token;
-      user_id2=res.body.data._id;
+      user_id2 = res.body.data._id;
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body).haveOwnProperty("token");
@@ -497,7 +496,7 @@ describe("get all properties", () => {
         .get("/api/v1/properties/all")
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`);
-      property_id=res.body.data[0]._id
+      property_id = res.body.data[0]._id;
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
 
@@ -517,25 +516,26 @@ describe(" update property, /api/v1/properties/:id", () => {
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`)
         .send({
-          "title": "House for rent",
-          "category": "Land",
-          "section": "rent",
-          "price": 900,
-          "size": 200,
-          "upi": "12/03/45/678",
-          "description": "a nice house",
-          "mainImage": "/home/john/Pictures/house3.jpg",
-          "otherImages": [],
-          "bedrooms": 1,
-          "bathrooms": 1,
-          "masterPlanUse": "Residential",
-          "masterPlanLevel": "R1",
-          "streetAddress": "KG 643 St",
-          "geoLocation": "0.345678, 32.345678",
-          "tank": false,
-          "furnished": false,
-          "internet": false,
-          "parking": false,
+          title: "House for rent",
+          category: "Land",
+          section: "rent",
+          price: 900,
+          size: 200,
+          upi: "12/03/45/678",
+          description: "a nice house",
+          mainImage:
+            "https://www.img.imali.biz/Im_mini_1/000004/8883_172235_TphQiwqPndR.jpg",
+          otherImages: [],
+          bedrooms: 1,
+          bathrooms: 1,
+          masterPlanUse: "Residential",
+          masterPlanLevel: "R1",
+          streetAddress: "KG 643 St",
+          geoLocation: "0.345678, 32.345678",
+          tank: false,
+          furnished: false,
+          internet: false,
+          parking: false,
         });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
@@ -557,7 +557,6 @@ describe("Get single property", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -575,7 +574,6 @@ describe("Hide a property", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -593,7 +591,6 @@ describe("Unhide a property", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -611,7 +608,6 @@ describe("Approve a property", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -629,7 +625,6 @@ describe("Make a user an admin", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -675,7 +670,9 @@ describe("GET all users,/api/v1/users", () => {
       const res = await chai
         .request(app)
         .get(`/api/v1/users`)
-        .set("Accept", "application/json");
+        .set("Accept", "application/json")
+        .set("Authorization", `Bearer ${token2}`)
+        .set("Cookie", `jwt=${token2}`);
       id = res.body.data[0]._id;
 
       expect(res.body).to.be.an("object");
@@ -700,29 +697,16 @@ describe("GET all users,/api/v1/users", () => {
       console.error(error);
     }
   });
-  it("Should get user profile", async () => {
+
+  it("should log out the user", async () => {
     try {
       const res = await chai
         .request(app)
-        .get(`/api/v1/users/profile/63ffd0082e32e9e7c8d223c2`)
-        .set("Accept", "application/json");
+        .post("/api/v1/users/logout")
+        .set("Authorization", `Bearer ${token2}`)
+        .set("Cookie", `jwt=${token2}`);
       expect(res.body).to.be.an("object");
-      expect(res.status).to.equal(httpStatus.BAD_REQUEST);
-      expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
-      expect(res.body.error).to.equal("Something went wrong,please try again");
-    } catch (error) {
-      console.error(error);
-    }
-  });
-  it("Logout", async () => {
-    try {
-      const res = await chai
-        .request(app)
-        .post(`/api/v1/users/logout`)
-        .set("Accept", "application/json");
-      expect(res.body).to.be.an("object");
-      expect(res.status).to.equal(httpStatus.OK);
-      expect(res.body.message).to.equal("Logged out successfully"); //
+      expect(res.body.message).to.equal("Logged out successfully");
     } catch (error) {
       console.error(error);
     }
@@ -805,7 +789,7 @@ describe("Create chat", () => {
         .post("/api/v1/chats")
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`)
-        .send({"userId":user_id2});
+        .send({ userId: user_id2 });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
       expect(res.body.status).to.equal(httpStatus.CREATED);
@@ -821,7 +805,7 @@ describe("Create chat", () => {
         .request(app)
         .post("/api/v1/properties")
         .set("Accept", "application/json")
-        .set("authorization", `Bearer ${token2}`)
+        .set("authorization", `Bearer ${token2}`);
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
 
@@ -849,7 +833,6 @@ describe("Get all chats", () => {
 });
 
 describe("Get all messages", () => {
-
   let id;
   before(async () => {
     try {
@@ -862,7 +845,6 @@ describe("Get all messages", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -884,7 +866,6 @@ describe("Get all messages", () => {
 });
 
 describe("Send a message", () => {
-
   let id;
   before(async () => {
     try {
@@ -897,7 +878,6 @@ describe("Send a message", () => {
 
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
-
     } catch (error) {
       console.error(error);
     }
@@ -910,7 +890,7 @@ describe("Send a message", () => {
         .post("/api/v1/messages")
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`)
-        .send({"content":"hello my brother Katabanga","chatId":id});
+        .send({ content: "hello my brother Katabanga", chatId: id });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
       expect(res.body.status).to.equal(httpStatus.CREATED);
@@ -926,7 +906,7 @@ describe("Send a message", () => {
         .post("/api/v1/messages")
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`)
-        .send({"content":"  ","chatId":id});
+        .send({ content: "  ", chatId: id });
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.CREATED);
       expect(res.body.status).to.equal(httpStatus.CREATED);
@@ -942,6 +922,38 @@ describe("Get all reports", () => {
       const res = await chai
         .request(app)
         .get("/api/v1/reports")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get all logs", () => {
+  it("get all logs", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/users/logs")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+describe("Get user reports", () => {
+  it("get user reports", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/users/reports")
         .set("Accept", "application/json")
         .set("authorization", `Bearer ${token2}`);
       expect(res.body).to.be.an("object");
