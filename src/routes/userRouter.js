@@ -88,10 +88,7 @@ router.patch("/resetPassword/:token", UserController.resetPassword);
  */
 router.post("/login", UserController.login);
 
-router.post(
-  "/logout", 
-  protectedRoute,
-  UserController.logout);
+router.post("/logout", protectedRoute, UserController.logout);
 
 router.post("/verifyEmail", protectedRoute, UserController.verifyEmail);
 
@@ -131,11 +128,8 @@ router.get(
   "/reports",
   protectedRoute,
   // isUserVerified,
-   userDashboard.userRecords);
-router.get(
-  "/logs",
-  protectedRoute,
-  UserController.getLogs
+  userDashboard.userRecords
 );
+router.get("/logs", protectedRoute, UserController.getLogs);
 
 export default router;

@@ -11,59 +11,58 @@ class UserDashboardService {
 
   static userRecords = async (req) => {
     const totalProperties = await Property.find({
-        postedBy: req?.user?._id,
-        
-      }).countDocuments();
+      postedBy: req?.user?._id,
+    }).countDocuments();
 
     // total number of hidden properties
     const totalHiddenProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isHidden: true,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isHidden: true,
+    }).countDocuments();
 
     // total number of unhidden properties
     const totalUnhiddenProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isHidden: false,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isHidden: false,
+    }).countDocuments();
 
     // total number of approved properties
     const totalApprovedProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isApproved: true,
-        isHidden: false,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isApproved: true,
+      isHidden: false,
+    }).countDocuments();
 
     // total number of unapproved properties
     const totalUnapprovedProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isApproved: false,
-        isHidden: false,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isApproved: false,
+      isHidden: false,
+    }).countDocuments();
 
     // total number of available properties
     const totalAvailableProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isAvailable: true,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isAvailable: true,
+    }).countDocuments();
 
     // total number of unavailable properties
     const totalUnavailableProperties = await Property.find({
-        postedBy: req?.user?._id,
-        isAvailable: false,
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      isAvailable: false,
+    }).countDocuments();
 
     // total number of houses
     const totalHouseProperties = await Property.find({
-        postedBy: req?.user?._id,
-        category: "House",
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      category: "House",
+    }).countDocuments();
 
     // total number of plots
     const totalPlotProperties = await Property.find({
-        postedBy: req?.user?._id,
-        category: "Plot",
-      }).countDocuments();
+      postedBy: req?.user?._id,
+      category: "Plot",
+    }).countDocuments();
 
     // total nubmer of houses for sale
     const totalHouseForSale = await Property.find({
@@ -90,7 +89,6 @@ class UserDashboardService {
     }).countDocuments();
 
     const data = {
-        
       totalProperties,
       totalHiddenProperties,
       totalUnhiddenProperties,

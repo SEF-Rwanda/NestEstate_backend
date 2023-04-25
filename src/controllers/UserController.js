@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import Email from "../utils/Email";
 import TokenAuthenticator from "./../utils/TokenAuthenticator";
 import crypto from "crypto";
+import moment from "moment";
 
 dotenv.config();
 
@@ -210,14 +211,38 @@ class UserController {
   });
 
   static getLogs = catchAsyncError(async (req, res, next) => {
-    const logs = await UserService.getLogs(req, res, next);
+    const { startDate, endDate } = req.query;
 
-    return Response.successMessage(
-      res,
-      "All logs",
-      logs,
-      httpStatus.OK
-    );
+    console.log("===============");
+    console.log(startDate, endDate);
+    console.log("===============");
+
+    try {
+      let startDateObj = null;
+      let endDateObj = null;
+      if (startDate && endDate) {
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        const isValidStartDate = moment(
+          startDate,
+          moment.ISO_8601,
+          true
+        ).isValid();
+        const isValidEndDate = moment(endDate, moment.ISO_8601, true).isValid();
+        if (!isValidStartDate || !isValidEndDate) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+        // Check if startDateObj and endDateObj are valid Date objects
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+          return res.status(400).json({ message: "Invalid date format" });
+        }
+      }
+      const logs = await UserService.getLogs(startDateObj, endDateObj);
+      return Response.successMessage(res, "All logs", logs, httpStatus.OK);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 }
 
