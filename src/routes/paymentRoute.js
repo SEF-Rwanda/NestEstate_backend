@@ -1,9 +1,14 @@
 const express = require("express");
 import PaymentController from "../controllers/PaymentController";
 import protectedRoute from "../middlewares/protectRoute";
+
 const router = express.Router();
 
-router.post("/create-checkout-session", PaymentController.makePayment);
+router.post(
+  "/create-checkout-session",
+  protectedRoute,
+  PaymentController.makePayment
+);
 
 router.post(
   "/webhook",

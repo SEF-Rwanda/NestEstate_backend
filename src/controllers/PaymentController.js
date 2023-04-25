@@ -12,11 +12,6 @@ dotenv.config();
 
 class PaymentController {
   static makePayment = catchAsyncError(async (req, res) => {
-
-    console.log("First User Id")
-    console.log(req.body.userId)
-    console.log("===============================")
-
     const property = req.body.property.property;
     const orderData = {
       id: property._id,
@@ -29,7 +24,7 @@ class PaymentController {
 
     const customer = await stripe.customers.create({
       metadata: {
-        userId: req.body.userId,
+        userId: req.user._id,
         property: JSON.stringify(orderData),
       },
     });
@@ -55,12 +50,12 @@ class PaymentController {
       cancel_url: `${process.env.CLIENT_URL}/checkout_cancel`,
     });
 
-    res.send({ url: session.url });
+    res.status(httpStatus.OK).send({ status: httpStatus.OK, url: session.url });
   });
 
-  // Create payment
+  // save payment
 
-  static createPayment = async (customer, data) => {
+  static savePayment = async (customer, data) => {
     // Get the property data to be saved in the database
     const property = JSON.parse(customer.metadata.property);
     const userId = customer.metadata.userId;
@@ -119,7 +114,7 @@ class PaymentController {
       stripe.customers
         .retrieve(data.customer)
         .then((customer) => {
-          this.createPayment(customer, data);
+          this.savePayment(customer, data);
         })
         .catch((err) => console.log(err.message));
     }
@@ -141,7 +136,7 @@ class PaymentController {
   static viewAllPayments = catchAsyncError(async (req, res) => {
     const payments = await PaymentService.viewAllPayments();
     res.status(200).json({
-      status: "success",
+      status: httpStatus.OK,
       data: payments,
     });
   });

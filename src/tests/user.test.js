@@ -162,7 +162,7 @@ describe("1 . POST signup,/api/v1/users/signup", () => {
 
 describe("2 . POST signup,/api/v1/users/verifyEmail", () => {
   let otp;
-  let token;
+
   before(async () => {
     try {
       const res = await chai
@@ -624,6 +624,73 @@ describe("forgot and reset", () => {
       expect(res.status).to.equal(httpStatus.BAD_REQUEST);
       expect(res.body.status).to.equal(httpStatus.BAD_REQUEST);
       expect(res.body.error).to.equal("Token is invalid or has expired");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+describe("Payment", () => {
+  it("Make payment", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .post(`/api/v1/payments/create-checkout-session`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token}`)
+        .send({
+          property: {
+            property: {
+              title: "Furnished Rent",
+              category: "Rent",
+              section: "for sale",
+              price: 1000,
+              size: "200",
+              upi: "12/03/45/672",
+              description: "A furnished house for rent at Kanombe",
+              mainImage:
+                "https://images.unsplash.com/photo-1591280063444-d3c514eb6e13?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80",
+              otherImages: [
+                "https://images.unsplash.com/photo-1591738802175-709fedef8288?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+                "https://images.unsplash.com/photo-1591738802175-709fedef8288?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+              ],
+            },
+          },
+        });
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body).haveOwnProperty("url");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("View all payments", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/payments/view-all-payments`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      
+    } catch (error) {
+      console.error(error);
+    }
+  });
+  it("View my payments", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get(`/api/v1/payments/view-my-payments`)
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token}`);
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      
     } catch (error) {
       console.error(error);
     }
