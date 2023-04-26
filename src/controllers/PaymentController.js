@@ -13,6 +13,7 @@ dotenv.config();
 class PaymentController {
   static makePayment = catchAsyncError(async (req, res) => {
     const property = req.body.property.property;
+    console.log(req.body);
     const orderData = {
       id: property._id,
       title: property.title,
@@ -24,7 +25,7 @@ class PaymentController {
 
     const customer = await stripe.customers.create({
       metadata: {
-        userId: req.user._id,
+        userId: req.body.userId,
         property: JSON.stringify(orderData),
       },
     });
@@ -59,6 +60,9 @@ class PaymentController {
     // Get the property data to be saved in the database
     const property = JSON.parse(customer.metadata.property);
     const userId = customer.metadata.userId;
+
+    console.log("property", property);
+    console.log("userId", userId);
 
     const customerId = data.customer;
     const pametnIntentId = data.payment_intent;

@@ -513,7 +513,7 @@ describe("4 . GET all users,/api/v1/users", () => {
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body.status).to.equal(httpStatus.OK);
-      expect(res.body.message).to.equal("All available users");
+      expect(res.body.message).to.equal("All users");
     } catch (error) {
       console.error(error);
     }
@@ -675,7 +675,6 @@ describe("Payment", () => {
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body.status).to.equal(httpStatus.OK);
-      
     } catch (error) {
       console.error(error);
     }
@@ -690,7 +689,6 @@ describe("Payment", () => {
       expect(res.body).to.be.an("object");
       expect(res.status).to.equal(httpStatus.OK);
       expect(res.body.status).to.equal(httpStatus.OK);
-      
     } catch (error) {
       console.error(error);
     }
