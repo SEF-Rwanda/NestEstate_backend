@@ -144,6 +144,7 @@ class PropertyService {
       property.description = req.body.description || property.description;
       property.mainImage = req.body.mainImage || property.mainImage;
       property.otherImages = req.body.otherImages || property.otherImages;
+      property.videoTour = req.body.videoTour || property.videoTour;
       property.bedrooms = req.body.bedrooms || property.bedrooms;
       property.bathrooms = req.body.bathrooms || property.bathrooms;
       property.masterPlanUse = req.body.masterPlanUse || property.masterPlanUse;

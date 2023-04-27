@@ -44,6 +44,14 @@ const propertySchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
+    videoTour: {
+      public_id: {
+        type: String,
+      },
+      url: {
+        type: String,
+      },
+    },
     bedrooms: {
       type: Number,
       default: 1,
