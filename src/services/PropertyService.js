@@ -102,14 +102,14 @@ class PropertyService {
     try {
       const property = await Property.findById(req.params.id).orFail();
       const relatedProperties = await Property.find({
-        category: property.category,
-        section: property.section,
+        // category: property.category,
+        // section: property.section,
         isAvailable: property.isAvailable,
         isApproved: property.isApproved,
         isHidden: property.isHidden,
-        price: { $gte: property.price - 50000, $lte: property.price + 50000 },
+        price: { $gte: property.price - 20000, $lte: property.price + 20000 },
         _id: { $ne: property._id },
-      }).limit(4);
+      });
 
       return {
         property,
