@@ -1033,6 +1033,27 @@ describe("Send a message", () => {
     }
   });
 });
+
+describe("GET report,/api/v1/reports", () => {
+  it("View reports", async () => {
+    try {
+      const res = await chai
+        .request(app)
+        .get("/api/v1/reports")
+        .set("Accept", "application/json")
+        .set("authorization", `Bearer ${token2}`);
+
+      expect(res.body).to.be.an("object");
+      expect(res.status).to.equal(httpStatus.OK);
+      expect(res.body.status).to.equal(httpStatus.OK);
+      expect(res.body.message).to.equal("All records");
+      expect(res.body).haveOwnProperty("data");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
 describe("POST preference,/api/v1/preferences", () => {
   it("create preference successfully", async () => {
     try {
