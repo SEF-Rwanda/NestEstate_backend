@@ -8,7 +8,7 @@ class ReportController {
             status: 200,
             message: "All records",
             data
-        });
+        })
     };
     
 

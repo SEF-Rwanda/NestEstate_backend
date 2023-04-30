@@ -41,6 +41,17 @@ class Email {
       return false;
     }
   }
+  static async newPropertyEmail(user, propertyId) {
+    const msg = EmailTemplate.newPropertyEmail(user, propertyId);
+    try {
+      await sendGrid.send(msg);
+      console.log("email sent");
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }
 
 export default Email;

@@ -4,18 +4,53 @@ import catchAsyncError from "../utils/catchAsyncError";
 import Response from "../utils/Response";
 import dotenv from "dotenv";
 import moment from "moment";
-import Property from "../models/propertyModel.js";
+import Preference from "../models/PreferenceModel.js";
+import Email from "../utils/Email.js";
 
 dotenv.config();
 
 class PropertyController {
   static addProperty = catchAsyncError(async (req, res, next) => {
-    const houses = await PropertyService.addProperty(req);
+    const property = await PropertyService.addProperty(req);
+    let concernedUsers = [];
+    if (property !== null && property.category === "House") {
+      concernedUsers = await Preference.find({
+        $or: [
+          {
+            price: {
+              $gte: property?.price,
+              $lte: property?.price,
+            },
+          },
+          { category: property.category },
+          { section: property.section },
+          { size: property.size },
+          { furnished: property.furnished },
+        ],
+      }).populate("postedBy", "-password");
+    } else {
+      concernedUsers = await Preference.find({
+        $or: [
+          {
+            price: {
+              $gte: property?.price,
+              $lte: property?.price,
+            },
+          },
+          { category: property.category },
+
+          { size: property.size },
+        ],
+      }).populate("postedBy", "-password");
+    }
+    for (let i = 0; i < concernedUsers.length; i++) {
+      await Email.newPropertyEmail(concernedUsers[i].postedBy, property._id);
+    }
 
     return Response.successMessage(
       res,
       "Property created successfully!",
-      houses,
+      property,
       httpStatus.CREATED
     );
   });
